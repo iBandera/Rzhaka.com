@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Маріо Платформер</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom, #fceabb, #f8b500);
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    #game {
+      position: relative;
+      width: 800px;
+      height: 500px;
+      background: none;
+      margin: 20px auto;
+      border: 3px solid #000;
+      overflow: hidden;
+    }
+
+    #player {
+      width: 40px;
+      height: 40px;
+      background: red;
+      position: absolute;
+      left: 100px;
+      bottom: 50px;
+      border-radius: 10px;
+    }
+
+    .platform {
+      position: absolute;
+      width: 150px;
+      height: 20px;
+      background: #654321;
+    }
+
+    .ground {
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    .coin {
+      width: 20px;
+      height: 20px;
+      background: gold;
+      border-radius: 50%;
+      position: absolute;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotateY(0); }
+      100% { transform: rotateY(360deg); }
+    }
+
+    .enemy {
+      width: 40px;
+      height: 40px;
+      background: purple;
+      position: absolute;
+      border-radius: 50%;
+      animation: moveEnemy 2s infinite alternate;
+    }
+
+    @keyframes moveEnemy {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(60px); }
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .controls button {
+      background: pink;
+      border: none;
+      padding: 10px 20px;
+      margin: 0 5px;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .controls button:hover {
+      background: hotpink;
+      color: white;
+    }
+
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 20px;
+      background: rgba(255,255,255,0.8);
+      padding: 5px 10px;
+      border-radius: 10px;
+      z-index: 10;
+    }
+
+    #win-message {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 28px;
+      color: green;
+      background: white;
+      padding: 20px 30px;
+      border-radius: 20px;
+      display: none;
+      z-index: 20;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <div id="score">Очки: 0</div>
+    <div id="win-message">🎉 Вітаю! Рівень пройдено!</div>
+    <div id="player"></div>
+    <div class="platform ground"></div>
+  </div>
+
+  <div class="controls">
+    <button onclick="keys['ArrowLeft'] = true; setTimeout(()=>keys['ArrowLeft']=false, 100)">←</button>
+    <button onclick="jump()">↑</button>
+    <button onclick="keys['ArrowRight'] = true; setTimeout(()=>keys['ArrowRight']=false, 100)">→</button>
+  </div>
+
+  <script>
+    const game = document.getElementById("game");
+    const player = document.getElementById("player");
+    const scoreBoard = document.getElementById("score");
+    const winMessage = document.getElementById("win-message");
+
+    let posX = 100;
+    let posY = 410;
+    let velocityY = 0;
+    let isJumping = false;
+    let keys = {};
+    let score = 0;
+    let currentLevel = 0;
+
+    document.addEventListener("keydown", (e) => keys[e.key] = true);
+    document.addEventListener("keyup", (e) => keys[e.key] = false);
+
+    function jump() {
+      if (!isJumping) {
+        velocityY = -14;
+        isJumping = true;
+      }
+    }
+
+    const levels = [
+      {
+        platforms: [
+          { left: 200, top: 350 },
+          { left: 400, top: 250 },
+          { left: 600, top: 200 }
+        ],
+        coins: [
+          { left: 410, top: 210 },
+          { left: 610, top: 150 }
+        ],
+        enemies: [
+          { left: 200, top: 310 },
+          { left: 600, top: 160 }
+        ]
+      },
+      {
+        platforms: [
+          { left: 100, top: 350 },
+          { left: 300, top: 280 },
+          { left: 500, top: 210 },
+          { left: 700, top: 150 }
+        ],
+        coins: [
+          { left: 310, top: 240 },
+          { left: 510, top: 170 },
+          { left: 710, top: 110 }
+        ],
+        enemies: [
+          { left: 100, top: 310 },
+          { left: 500, top: 170 }
+        ]
+      }
+    ];
+
+    function loadLevel(level) {
+      document.querySelectorAll(".platform:not(.ground), .coin, .enemy").forEach(el => el.remove());
+
+      for (let p of level.platforms) {
+        const plat = document.createElement("div");
+        plat.className = "platform";
+        plat.style.left = p.left + "px";
+        plat.style.top = p.top + "px";
+        game.appendChild(plat);
+      }
+
+      for (let c of level.coins) {
+        const coin = document.createElement("div");
+        coin.className = "coin";
+        coin.style.left = c.left + "px";
+        coin.style.top = c.top + "px";
+        game.appendChild(coin);
+      }
+
+      for (let e of level.enemies) {
+        const enemy = document.createElement("div");
+        enemy.className = "enemy";
+        enemy.style.left = e.left + "px";
+        enemy.style.top = e.top + "px";
+        game.appendChild(enemy);
+      }
+
+      posX = 100;
+      posY = 410;
+    }
+
+    function gameLoop() {
+      if (keys["ArrowLeft"]) posX -= 4;
+      if (keys["ArrowRight"]) posX += 4;
+
+      if ((keys["ArrowUp"] || keys[" "]) && !isJumping) jump();
+
+      velocityY += 0.6;
+      posY += velocityY;
+
+      const platforms = document.querySelectorAll(".platform");
+      const coins = document.querySelectorAll(".coin");
+      const enemies = document.querySelectorAll(".enemy");
+
+      platforms.forEach(platform => {
+        const pRect = platform.getBoundingClientRect();
+        const plRect = player.getBoundingClientRect();
+        if (
+          plRect.bottom <= pRect.top + 10 &&
+          plRect.bottom + velocityY >= pRect.top &&
+          plRect.right > pRect.left &&
+          plRect.left < pRect.right
+        ) {
+          posY = pRect.top - game.getBoundingClientRect().top - player.offsetHeight;
+          velocityY = 0;
+          isJumping = false;
+        }
+      });
+
+      coins.forEach(coin => {
+        const coinRect = coin.getBoundingClientRect();
+        const playerRect = player.getBoundingClientRect();
+        if (
+          playerRect.right > coinRect.left &&
+          playerRect.left < coinRect.right &&
+          playerRect.bottom > coinRect.top &&
+          playerRect.top < coinRect.bottom
+        ) {
+          coin.remove();
+          score += 10;
+          scoreBoard.innerText = "Очки: " + score;
+        }
+      });
+
+      enemies.forEach(enemy => {
+        const enemyRect = enemy.getBoundingClientRect();
+        const playerRect = player.getBoundingClientRect();
+        if (
+          playerRect.right > enemyRect.left &&
+          playerRect.left < enemyRect.right &&
+          playerRect.bottom > enemyRect.top &&
+          playerRect.top < enemyRect.bottom
+        ) {
+          posX = 100;
+          posY = 410;
+          velocityY = 0;
+        }
+      });
+
+      if (posY > game.offsetHeight - player.offsetHeight) {
+        posY = game.offsetHeight - player.offsetHeight;
+        velocityY = 0;
+        isJumping = false;
+      }
+
+      player.style.left = posX + "px";
+      player.style.top = posY + "px";
+
+      if (document.querySelectorAll(".coin").length === 0) {
+        winMessage.style.display = "block";
+        setTimeout(() => {
+          winMessage.style.display = "none";
+          currentLevel++;
+          if (currentLevel < levels.length) {
+            loadLevel(levels[currentLevel]);
+          } else {
+            winMessage.innerText = "🎉 Ти пройшов усі рівні! Молодець!";
+            winMessage.style.display = "block";
+          }
+        }, 1500);
+      }
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    loadLevel(levels[currentLevel]);
+    gameLoop();
+  </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ржака до сліз</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url('https://wallpaper.forfun.com/fetch/22/22f3476224dd44049d67870423ce775b.jpeg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center;
+      color: pink;
+      overflow: hidden;
+    }
+
+    .content {
+      text-align: center;
+      padding-top: 100px;
+      transition: transform 0.4s ease-in-out;
+    }
+
+    body.menu-open .content {
+      transform: translateX(250px);
+    }
+
+    h1, p {
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 24px;
+      margin-bottom: 250px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: rgba(255, 105, 180, 0.8);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 18px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease, filter 0.3s ease;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background-color: rgba(255, 20, 147, 0.9);
+      filter: drop-shadow(0 0 8px #9b7de0);
+    }
+
+    #side-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100%;
+      background-color: rgba(255, 105, 180, 0.85);
+      box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease-in-out;
+      z-index: 1001;
+      padding-top: 60px;
+    }
+
+    body.menu-open #side-menu {
+      transform: translateX(0);
+    }
+    
+    #side-menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #side-menu ul li a {
+        display: block;
+        padding: 15px 20px;
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, padding-left 0.3s ease;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    #side-menu ul li a:hover {
+        background-color: rgba(255, 20, 147, 0.9);
+        padding-left: 30px;
+    }
+
+    #menu-toggle {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        font-size: 32px;
+        color: white;
+        z-index: 1002;
+        cursor: pointer;
+        transition: filter 0.3s ease, transform 0.4s ease-in-out;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+    }
+    
+    body.menu-open #menu-toggle {
+        transform: translateX(250px);
+    }
+
+    #menu-toggle:hover {
+        filter: drop-shadow(0 0 8px #9b7de0);
+    }
+
+    .floating-icon {
+      position: fixed;
+      z-index: 1000;
+      font-size: 50px;
+      text-decoration: none;
+      transition: filter 0.3s ease;
+    }
+
+    .floating-icon:hover {
+      filter: drop-shadow(0 0 12px hotpink);
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="side-menu">
+    <ul>
+      <li><a href="space.html" title="Ти реально космос">🌠 Космос</a></li>
+      <li><a href="roulette.html" title="Діма прівет">🪄 Філе о фіш</a></li>
+      <li><a href="chips.html" title="Чіпси - це круто">🍟 Яка ти пачка чіпсів?</a></li>
+      <li><a href="crossword.html" title="Кросворд">💩 Кросворд</a></li>
+      <li><a href="news.html" title="Дайджест">📰 Дайджест</a></li>
+      <li><a href="snake.html" title="Накормі змію">🐍 Накормі змію</a></li>
+      <li><a href="kasino.html" title="Казіно">🎰 Казіно</a></li>
+      <li><a href="checkers.html" title="Шашкі">🧿 Шашкі</a></li>
+      <li><a href="victorina.html" title="Вікторіна">🧩 Вікторіна</a></li>
+      <li><a href="tictac.html" title="Хрестікі-нолікі">🕛 Хрестікі-нолікі</a></li>
+      <li><a href="world.html" title="Дякую мухе">🌍 Ми пізнаємо світ</a></li>
+    </ul>
+  </div>
+  
+  <div id="menu-toggle">☰</div>
+
+  <div class="content">
+    <h1>Ржака до сліз точка ком</h1>
+    <p>Натисни кнопку нижче, щоб отримати понос!</p>
+    <a href="content.html" class="button">Гамно вопрос</a>
+  </div>
+
+  <a href="quest.html" id="floating-letter" class="floating-icon" title="Таємний квест">💌</a>
+  <a href="princess.html" id="floating-princess" class="floating-icon" title="Принцеса">🎀</a>
+  <a href="cometa.html" id="floating-comet" class="floating-icon" title="Комета">☄️</a>
+
+  <script>
+    const body = document.body;
+    const sideMenu = document.getElementById('side-menu');
+    const menuToggle = document.getElementById('menu-toggle');
+    const content = document.querySelector('.content');
+
+    function toggleMenu() {
+      body.classList.toggle('menu-open');
+    }
+
+    menuToggle.addEventListener('click', toggleMenu);
+
+    document.addEventListener('click', function(event) {
+      const isClickInsideMenu = sideMenu.contains(event.target);
+      const isClickOnToggle = menuToggle.contains(event.target);
+      const isMenuOpen = body.classList.contains('menu-open');
+
+      if (isMenuOpen && !isClickInsideMenu && !isClickOnToggle) {
+        toggleMenu();
+      }
+    });
+
+    const floatingIcons = document.querySelectorAll('.floating-icon');
+    const iconData = [];
+
+    floatingIcons.forEach(icon => {
+        const speed = 0.4 + Math.random() * 0.8; 
+        const angle = Math.random() * 2 * Math.PI;
+        iconData.push({
+            element: icon,
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed
+        });
+    });
+
+    function animateIcons() {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      iconData.forEach(data => {
+        const { element } = data;
+        const iconWidth = element.offsetWidth;
+        const iconHeight = element.offsetHeight;
+
+        data.x += data.vx;
+        data.y += data.vy;
+
+        if (data.x + iconWidth >= viewportWidth || data.x <= 0) {
+          data.vx = -data.vx;
+        }
+        if (data.y + iconHeight >= viewportHeight || data.y <= 0) {
+          data.vy = -data.vy;
+        }
+        
+        element.style.left = data.x + 'px';
+        element.style.top = data.y + 'px';
+      });
+
+      requestAnimationFrame(animateIcons);
+    }
+
+    animateIcons();
+  </script>
+</body>
+</html>

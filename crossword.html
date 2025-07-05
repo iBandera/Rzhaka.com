@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Непотяное</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff6ec;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      margin-top: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    td {
+      width: 30px;
+      height: 30px;
+      border: 1px solid black;
+      text-align: center;
+      vertical-align: middle;
+      position: relative;
+    }
+    td input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      text-align: center;
+      font-size: 16px;
+      text-transform: uppercase;
+      background-color: white;
+      outline: none;
+    }
+    td.blocked {
+      background-color: transparent;
+      border: none;
+    }
+    td span {
+      position: absolute;
+      top: 1px;
+      left: 3px;
+      font-size: 10px;
+    }
+    .buttons {
+      margin: 20px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 14px;
+      margin: 0 5px;
+      cursor: pointer;
+      background-color: pink;
+      border: none;
+      border-radius: 5px;
+    }
+    ol {
+      max-width: 600px;
+      text-align: left;
+    }
+
+    @keyframes correct {
+      0% { background-color: lightgreen; }
+      100% { background-color: white; }
+    }
+
+    @keyframes wrong {
+      0% { background-color: #f88; }
+      100% { background-color: white; }
+    }
+  </style>
+</head>
+<body>
+<h1>Шото я непон</h1>
+
+<ol>
+  <li>Важлива особа</li>
+  <li>Я зараз</li>
+  <li>Да...</li>
+  <li>Вітаю, у Вас...</li>
+  <li>Салон краси</li>
+  <li>Це не пердячка, це реально</li>
+  <li>Бренд сумки</li>
+  <li>Вкусняшка на пару</li>
+  <li>У Вас є риба-...?</li>
+  <li>Офісний делікатес</li>
+  <li>Країна мрій - це повна...</li>
+  <li>Мій секрет</li>
+</ol>
+
+<table id="crossword"></table>
+<div class="buttons">
+  <button onclick="checkAnswers()">Перевірити відповіді</button>
+  <button onclick="clearGrid()">Очистити все</button>
+  <button onclick="location.href='index.html'">На головну</button>
+</div>
+
+<script>
+const size = 15;
+const grid = Array.from({ length: size }, () => Array(size).fill(null));
+
+const words = [
+  {number: 1, answer: "ЛЕРА", row: 0, col: 0, dir: 'across'},
+  {number: 2, answer: "РЖУН", row: 0, col: 2, dir: 'down'},
+  {number: 3, answer: "УЖ", row: 2, col: 2, dir: 'across'},
+  {number: 4, answer: "ПОНОС", row: 4, col: 0, dir: 'across'},
+  {number: 5, answer: "СІСІ", row: 4, col: 4, dir: 'down'},
+  {number: 6, answer: "СРАЧКА", row: 10, col: 2, dir: 'across'},
+  {number: 7, answer: "ГАВ", row: 2, col: 6, dir: 'down'},
+  {number: 8, answer: "ГАМНО", row: 1, col: 6, dir: 'across'},
+  {number: 9, answer: "ПУТАНА", row: 5, col: 0, dir: 'down'},
+  {number: 10, answer: "ЧІПСИ", row: 8, col: 2, dir: 'across'},
+  {number: 11, answer: "ЖОПА", row: 0, col: 10, dir: 'down'},
+  {number: 12, answer: "КЛЮЧ", row: 10, col: 7, dir: 'down'}
+];
+
+const table = document.getElementById("crossword");
+
+words.forEach(({number, answer, row, col, dir}) => {
+  for (let i = 0; i < answer.length; i++) {
+    const r = dir === 'across' ? row : row + i;
+    const c = dir === 'across' ? col + i : col;
+    if (!grid[r][c]) grid[r][c] = { letter: answer[i], number: null };
+    if (i === 0) grid[r][c].number = number;
+  }
+});
+
+for (let r = 0; r < size; r++) {
+  const row = document.createElement("tr");
+  for (let c = 0; c < size; c++) {
+    const cell = document.createElement("td");
+    if (grid[r][c]) {
+      const input = document.createElement("input");
+      input.maxLength = 1;
+      input.dataset.row = r;
+      input.dataset.col = c;
+      input.addEventListener("keydown", (e) => {
+        const key = e.key;
+        let newRow = parseInt(input.dataset.row);
+        let newCol = parseInt(input.dataset.col);
+
+        if (key === "ArrowRight") newCol++;
+        else if (key === "ArrowLeft") newCol--;
+        else if (key === "ArrowDown") newRow++;
+        else if (key === "ArrowUp") newRow--;
+
+        if (
+          newRow >= 0 && newRow < size &&
+          newCol >= 0 && newCol < size &&
+          table.rows[newRow].cells[newCol]
+        ) {
+          const nextInput = table.rows[newRow].cells[newCol].querySelector("input");
+          if (nextInput) nextInput.focus();
+        }
+      });
+      cell.appendChild(input);
+      if (grid[r][c].number !== null) {
+        const label = document.createElement("span");
+        label.textContent = grid[r][c].number;
+        cell.appendChild(label);
+      }
+    } else {
+      cell.classList.add("blocked");
+    }
+    row.appendChild(cell);
+  }
+  table.appendChild(row);
+}
+
+function checkAnswers() {
+  for (const { answer, row, col, dir } of words) {
+    for (let i = 0; i < answer.length; i++) {
+      const r = dir === 'across' ? row : row + i;
+      const c = dir === 'across' ? col + i : col;
+      const input = table.rows[r].cells[c].querySelector("input");
+      if (!input) continue;
+      const val = input.value.toUpperCase();
+      input.style.animation = val === answer[i] ? "correct 0.5s ease-in-out" : "wrong 0.5s ease-in-out";
+    }
+  }
+}
+
+function clearGrid() {
+  const inputs = document.querySelectorAll("input");
+  inputs.forEach(i => {
+    i.value = "";
+    i.style.backgroundColor = "white";
+    i.style.animation = "none";
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Допрос</title>
+  <style>
+    body {
+      background-color: #f5f5dc;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin-top: 100px;
+      padding: 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      animation: fadeIn 1s ease-in-out;
+      text-align: center;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    h1 {
+      color: #d63384;
+      margin-bottom: 20px;
+    }
+
+    .question {
+      font-size: 20px;
+      margin: 20px 0;
+      animation: fadeInUp 0.5s ease-in-out;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    button.option {
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.3s;
+      animation: fadeInUp 0.5s ease-in-out;
+    }
+
+    button.option:hover {
+      transform: scale(1.05);
+    }
+
+    .correct {
+      background-color: #28a745 !important;
+      animation: flash 0.6s ease-in-out;
+    }
+
+    .wrong {
+      background-color: #dc3545 !important;
+    }
+
+    .result {
+      font-size: 24px;
+      font-weight: bold;
+      color: #d63384;
+      margin-top: 20px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .btn {
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      animation: fadeIn 1s ease-in-out;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .btn-home-wrapper {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      text-align: center;
+      z-index: 100;
+    }
+
+    .btn-home {
+      width: 100%;
+      cursor: pointer;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 12px;
+      transition: transform 0.2s;
+    }
+
+    .btn-home:hover {
+      animation: shake 0.5s ease-in-out infinite;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes flash {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+
+    /* Відео контейнер */
+    #video {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 600px;
+      display: none;
+      position: relative;
+    }
+
+    #muteBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: rgba(255, 105, 180, 0.8);
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      z-index: 10;
+      transition: background-color 0.3s;
+    }
+
+    #muteBtn:hover {
+      background-color: rgba(255, 105, 180, 1);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container" id="quiz">
+    <h1>Чо за допрос?</h1>
+    <div id="question" class="question"></div>
+    <div class="options" id="options"></div>
+    <div id="result" class="result"></div>
+    <button id="retryBtn" class="btn" style="display:none;" onclick="restartQuiz()">Трах егайн</button>
+  </div>
+
+  <div id="video">
+    <!-- Тут буде відео -->
+  </div>
+
+  <div class="btn-home-wrapper">
+    <button class="btn-home" onclick="window.location.href='index.html'">УДІ</button>
+  </div>
+
+  <script>
+    const quizData = [
+      { question: "Говори, не говори, а краще місто?", options: ["Київ", "Оболонь", "Бровари", "Житомир"], correct: 2 },
+      { question: "Які чіпси любить Діма", options: ["Краб", "Сметана", "Сир", "Всі"], correct: 3 },
+      { question: "На інтуїцію", options: ["ОКАК", "ЕМАЕ", "І ЧО", "ЕЕЕЕЕЕЕЕЕЕЕ"], correct: 3 },
+      { question: "Яке свято 7 червня, День...", options: ["Каракатикуристів", "Очка", "Гавна", "Турботи"], correct: 3 },
+      { question: "Еліксір життя", options: ["Молоко осла", "Текіла", "Джин", "Понос"], correct: 3 },
+      { question: "Що росте на дереві?", options: ["Ретузи", "Ананаси", "Помідори", "Чіпсі"], correct: 0 },
+      { question: "Сальто-...?", options: ["Мортаделька", "Портальто", "Картальто", "Мортальто"], correct: 3 },
+      { question: "Найкращий анекдот", options: ["Клоун", "Негр", "Кістік", "Повар"], correct: 3 },
+      { question: "Як звали опонента Скруджа МакДональдса", options: ["KFC", "Йобана псіна", "ДериХвіст", "ДериЖопу"], correct: 2 },
+      { question: "Рік заснування Expert Solution", options: ["2003", "2004", "2006", "2014"], correct: 2 }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const resultEl = document.getElementById('result');
+    const retryBtn = document.getElementById('retryBtn');
+    const videoWrapper = document.getElementById('video');
+
+    function showQuestion() {
+      const q = quizData[currentQuestion];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+      resultEl.textContent = "";
+      retryBtn.style.display = 'none';
+      videoWrapper.style.display = 'none';
+      videoWrapper.innerHTML = "";
+
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.className = "option";
+        btn.textContent = opt;
+        btn.onclick = () => selectAnswer(i, btn);
+        optionsEl.appendChild(btn);
+      });
+
+      questionEl.style.display = '';
+      optionsEl.style.display = '';
+    }
+
+    function selectAnswer(selected, btn) {
+      const correctIndex = quizData[currentQuestion].correct;
+      const allButtons = document.querySelectorAll(".option");
+
+      allButtons.forEach(b => b.disabled = true);
+
+      if (selected === correctIndex) {
+        score++;
+        btn.classList.add("correct");
+      } else {
+        btn.classList.add("wrong");
+        allButtons[correctIndex].classList.add("correct");
+      }
+
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < quizData.length) {
+          showQuestion();
+        } else {
+          showResult();
+        }
+      }, 900);
+    }
+
+    function showResult() {
+      questionEl.style.display = 'none';
+      optionsEl.style.display = 'none';
+
+      let text = "";
+      let videoSrc = "";
+
+      if (score <= 1) {
+        text = "3.14 здець 😬";
+        videoSrc = "video/chocolate.mp4";
+      } else if (score <= 3) {
+        text = "Емае, спробуй щі 😐";
+        videoSrc = "video/rock.mp4";
+      } else if (score <= 5) {
+        text = "Ну норм 🙂";
+        videoSrc = "video/capibara.mp4";
+      } else if (score <= 7) {
+        text = "Вау, сальто-мортальто 😎";
+        videoSrc = "video/shrek.mp4";
+      } else if (score <= 9) {
+        text = "Партія вами пишається ✌️";
+        videoSrc = "video/dance.mp4";
+      } else {
+        text = "Real Expert 💪";
+        videoSrc = "video/bear.mp4";
+      }
+
+      resultEl.textContent = `Правільних відповідей: ${score} з ${quizData.length}. Різультат: ${text}`;
+      retryBtn.style.display = 'inline-block';
+
+      videoWrapper.innerHTML = `
+        <video id="resultVideo" width="100%" autoplay loop muted>
+          <source src="${videoSrc}" type="video/mp4">
+          Ваш браузер не підтримує відео.
+        </video>
+        <button id="muteBtn">🔇</button>
+      `;
+      videoWrapper.style.display = 'block';
+
+      const muteBtn = document.getElementById('muteBtn');
+      const videoEl = document.getElementById('resultVideo');
+
+      muteBtn.onclick = () => {
+        videoEl.muted = !videoEl.muted;
+        muteBtn.textContent = videoEl.muted ? "🔇" : "🔊";
+      }
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      videoWrapper.style.display = 'none';
+      videoWrapper.innerHTML = "";
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>

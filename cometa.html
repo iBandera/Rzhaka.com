@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Топ 5 найкрасивіших комет</title>
+    <style>
+        body {
+            background-color: #F5F5DC;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            color: #E4717A;
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .slideshow-wrapper {
+            max-width: 960px;
+            margin: auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slideshow-container {
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .mySlides {
+            display: none;
+        }
+
+        .mySlides img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            vertical-align: middle;
+            border-radius: 15px;
+            animation: ken-burns 20s infinite;
+        }
+
+        #description-container {
+            max-width: 800px;
+            margin: 25px auto 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            animation: slideUp 1s ease-out;
+        }
+
+        #description-container h3 {
+            color: #333;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+
+        #description-container p {
+            color: #555;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        @keyframes ken-burns {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.15) translate(-4%, 4%); }
+            100% { transform: scale(1) translate(0, 0); }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        .prev, .next {
+            cursor: pointer;
+            color: #E4717A;
+            font-weight: bold;
+            font-size: 30px;
+            transition: 0.3s ease;
+            user-select: none;
+            padding: 10px;
+            animation: pulse 2.5s infinite;
+        }
+        .prev { margin-right: 15px; }
+        .next { margin-left: 15px; }
+
+        .prev:hover, .next:hover {
+            color: #333;
+            transform: scale(1.1);
+        }
+
+        .dots-container {
+            text-align: center;
+            padding-top: 25px;
+        }
+
+        .dot {
+            cursor: pointer;
+            height: 15px;
+            width: 15px;
+            margin: 0 4px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+
+        .active, .dot:hover {
+            background-color: #E4717A;
+        }
+
+        .footer-nav {
+            text-align: center;
+            margin-top: 40px;
+            padding-bottom: 20px;
+        }
+        .main-button {
+            background-color: #FFC0CB;
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Топ 5 найкрасивіших комет</h1>
+    </div>
+
+    <div class="slideshow-wrapper">
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+
+        <div class="slideshow-container">
+            <div class="mySlides">
+                <img src="images/cometa5.jpg" alt="Комета NEOWISE">
+            </div>
+            <div class="mySlides">
+                <img src="images/cometa4.jpg" alt="Комета Гейла-Боппа">
+            </div>
+            <div class="mySlides">
+                <img src="images/cometa3.jpg" alt="Комета Хякутаке">
+            </div>
+            <div class="mySlides">
+                <img src="images/cometa2.jpg" alt="Комета Галлея">
+            </div>
+            <div class="mySlides">
+                <img src="images/cometa1.jpg" alt="Комета Лера">
+            </div>
+        </div>
+        
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+
+    <div class="dots-container">
+        <span class="dot" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot" onclick="currentSlide(5)"></span>
+    </div>
+
+    <div id="description-container"></div>
+
+    <div class="footer-nav">
+        <a href="index.html" class="main-button">Назад на 🌍</a>
+    </div>
+
+    <script>
+        const descriptions = [
+            {
+                title: "Комета NEOWISE",
+                text: "Комета Північної півкулі з часів комети Гейла-Боппа. Влітку 2020 року її було чудово видно перед світанком та після заходу сонця, вона подарувала дивовижне видовище під час пандемії."
+            },
+            {
+                title: "Комета Гейла-Боппа",
+                text: "Цю комету було видно неозброєним оком рекордні 18 місяців у 1996-1997 роках. Вона мала два чіткі хвости: блакитний газовий та жовтуватий пиловий."
+            },
+            {
+                title: "Комета Хякутаке",
+                text: "Ця комета здійснила один з найближчих прольотів повз Землю в історії. У 1996 році її блакитний іонний хвіст простягався через усе небо, а ядро було видно навіть у бінокль."
+            },
+            {
+                title: "Комета Галлея",
+                text: "Найвідоміша короткоперіодична комета. Вона повертається до Сонця приблизно кожні 75 років, що дозволяє одній людині побачити її двічі за життя. Востаннє вона була тут у 1986 році і повернеться у 2061."
+            },
+            {
+                title: "Комета Лера",
+                text: "Народилася 16 вересня 2004 року. Спостерігається на Оболоні і по будням на Контрактовій площі. Об'єктивно вважається найскравішою та найгарнішою у Всесвіті"
+            }
+        ];
+
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("mySlides");
+            let dots = document.getElementsByClassName("dot");
+            let descriptionContainer = document.getElementById("description-container");
+            
+            if (n > slides.length) {slideIndex = 1}
+            if (n < 1) {slideIndex = slides.length}
+            
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            
+            slides[slideIndex-1].style.display = "block";
+            dots[slideIndex-1].className += " active";
+
+            let currentDescription = descriptions[slideIndex-1];
+            descriptionContainer.innerHTML = `<h3>${currentDescription.title}</h3><p>${currentDescription.text}</p>`;
+            
+            descriptionContainer.style.animation = 'none';
+            void descriptionContainer.offsetWidth; 
+            descriptionContainer.style.animation = 'slideUp 1s ease-out';
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') {
+                plusSlides(-1);
+            } else if (event.key === 'ArrowRight') {
+                plusSlides(1);
+            }
+        });
+    </script>
+
+</body>
+</html>

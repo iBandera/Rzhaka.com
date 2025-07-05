@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Казино Ржака До Сліз</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
+    body {
+      margin: 0; padding: 0; background: #ffe6f0;
+      font-family: 'Montserrat', sans-serif;
+      color: #d63384;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      user-select: none;
+      justify-content: center;
+      align-items: center;
+    }
+    #setup-area, #gameArea, #videoWin {
+      padding: 20px;
+      text-align: center;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      max-width: 600px;
+      width: 100%;
+    }
+    #setup-area input[type=text] {
+      font-size: 18px;
+      padding: 5px;
+      margin: 5px 10px;
+      border-radius: 8px;
+      border: 2px solid #d63384;
+      width: 180px;
+      text-align: center;
+    }
+    select, button {
+      cursor: pointer;
+      background: #d63384;
+      border: none;
+      color: white;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-size: 18px;
+      margin: 10px 6px;
+      transition: background-color 0.3s;
+    }
+    select:hover, button:hover {
+      background: #ff71b8;
+    }
+    #playerInputs {
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: 600;
+      margin-right: 10px;
+    }
+    #gameArea {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+    }
+    #gameAreaTitle {
+      color: #d63384;
+      margin-top: 8vh;
+      margin-bottom: 20px;
+      font-size: 30px;
+      font-weight: 700;
+    }
+    #reels {
+      display: flex;
+      gap: 25px;
+      cursor: pointer;
+      user-select: none;
+      justify-content: center;
+      width: 100%;
+    }
+    .reel {
+      width: 140px;
+      height: 140px;
+      font-size: 110px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 0 15px #d63384cc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      transition: box-shadow 0.3s ease;
+    }
+    .reel:hover {
+      box-shadow: 0 0 25px #ff71b8cc;
+    }
+    .reel img {
+      max-width: 130px;
+      max-height: 130px;
+      border-radius: 20px;
+      user-select: none;
+      object-fit: contain;
+    }
+
+    @keyframes spin-reel-1 {
+      0% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-60%) rotate(15deg); }
+      50% { transform: translateY(-120%) rotate(-15deg); }
+      75% { transform: translateY(-60%) rotate(10deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+    @keyframes spin-reel-2 {
+      0% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-70%) rotate(-10deg); }
+      50% { transform: translateY(-140%) rotate(20deg); }
+      75% { transform: translateY(-70%) rotate(-20deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+    @keyframes spin-reel-3 {
+      0% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-50%) rotate(20deg); }
+      50% { transform: translateY(-100%) rotate(-10deg); }
+      75% { transform: translateY(-50%) rotate(15deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    .spinning1 { animation: spin-reel-1 1.3s ease-in-out; }
+    .spinning2 { animation: spin-reel-2 1.3s ease-in-out; }
+    .spinning3 { animation: spin-reel-3 1.3s ease-in-out; }
+
+    #prizeText {
+      font-size: 24px;
+      font-weight: 700;
+      min-height: 30px;
+      margin-top: 10px;
+    }
+    #scoreboard {
+      width: 300px;
+      background: #fff0f5;
+      border-radius: 20px;
+      padding: 12px;
+      box-shadow: 0 0 12px #d63384aa;
+      font-weight: 600;
+      font-size: 20px;
+      color: #d63384;
+      margin-top: 15px;
+    }
+    .player {
+      margin: 6px 0;
+    }
+    #controls {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 550px;
+      margin-top: 20px;
+    }
+    .btn-pink {
+      background: #d63384;
+      border-radius: 14px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      border: none;
+      padding: 8px 15px;
+      transition: background-color 0.3s;
+      margin: 5px;
+    }
+    .btn-pink:hover {
+      background: #ff71b8;
+    }
+    #btnRules {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 100;
+    }
+    #btnSoundToggle {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      z-index: 100;
+    }
+    #btnBackToMainSetup {
+        background: #d63384;
+        border-radius: 14px;
+        color: white;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        padding: 8px 15px;
+        transition: background-color 0.3s;
+        margin-top: 20px;
+    }
+    #btnBackToMainSetup:hover {
+        background: #ff71b8;
+    }
+
+
+    #infoBox {
+      position: fixed;
+      top: 60px;
+      right: 15px;
+      background: white;
+      color: #d63384;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #d63384cc;
+      padding: 15px 20px;
+      width: 320px;
+      font-size: 15px;
+      line-height: 1.4;
+      display: none;
+      z-index: 101;
+    }
+    #infoBox.active {
+      display: block;
+    }
+    #videoWin {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 0 20px #d63384cc;
+      max-width: 400px;
+      margin: auto;
+    }
+    #videoWin video {
+      width: 100%;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      user-select: none;
+    }
+    #videoWin h2 {
+      font-size: 26px;
+      font-weight: 900;
+      color: #d63384;
+      margin: 0;
+    }
+    #confetti-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 200;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="setup-area">
+    <h1>Вибірай меня скарей</h1>
+    <select id="modeSelect" aria-label="Вибір режиму гри">
+      <option value="1">Адін</option>
+      <option value="2">Пара</option>
+    </select>
+    <div id="playerInputs">
+      <label for="player1Name">Ім'я гравця 1:</label>
+      <input type="text" id="player1Name" maxlength="12" placeholder="Ім'я гравця 1" />
+    </div>
+    <button id="btnStart">Летс гоу</button>
+    <button id="btnBackToMainSetup" class="btn-pink">УДІ</button>
+  </div>
+
+  <div id="gameArea" aria-live="polite" aria-atomic="true" role="region" aria-label="Ігрове поле">
+    <h2 id="gameAreaTitle">Казино Ржака Ком</h2> <div id="reels" role="list" aria-label="Котушки слоту">
+      <div class="reel" role="listitem" aria-label="Котушка 1">💩</div>
+      <div class="reel" role="listitem" aria-label="Котушка 2">💩</div>
+      <div class="reel" role="listitem" aria-label="Котушка 3">💩</div>
+    </div>
+
+    <div id="scoreboard" aria-live="polite" aria-atomic="true" role="region" aria-label="Табло рахунку"></div>
+    <div id="prizeText" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="controls">
+      <button id="btnSpin" class="btn-pink" aria-label="Обертати слот">Крутіте 🎰</button>
+      <button id="btnBackToMode" class="btn-pink" style="display:none;">Бек ту зе рутс</button>
+      <button id="btnHome" class="btn-pink" style="display:none;">УДІ</button>
+      <button id="btnRestart" class="btn-pink" style="display:none;">Трах егейн</button>
+    </div>
+  </div>
+
+  <button id="btnRules" class="btn-pink" aria-expanded="false" aria-controls="infoBox" aria-haspopup="true">Правіла создани чтоб іх нарушать 📖</button>
+  <button id="btnSoundToggle" class="btn-pink" aria-pressed="true">🔊 Звук</button>
+
+  <div id="infoBox" role="dialog" aria-modal="true" aria-labelledby="rulesTitle" tabindex="-1">
+    <h3 id="rulesTitle">Правіла гри</h3>
+    <p>Виграш нараховується за комбінації на трьох котушках:</p>
+    <ul>
+        <li>3 однакових фото: 52 бали</li>
+        <li>2 фото одного типу + 1 фото іншого типу: 27 балів</li>
+        <li>2 однакових фото + 1 смайл : 12 балів</li>
+        <li>2 різних фото + 1 смайл: 7 балів</li>
+        <li>3 однакових смайла: 10 балів</li>
+        <li>2 однакових смайла: 3 бали</li>
+    </ul>
+    <p>Хто перший набере сотку!</p>
+  </div>
+
+  <div id="videoWin" role="alert" aria-live="assertive">
+    <video id="winVideo" src="https://v1.pinimg.com/videos/mc/720p/65/31/34/6531340471a049c395b4a00f4697c3e3.mp4" controls></video>
+    <h2 id="winMessage"></h2>
+    <button id="btnCloseVideo" class="btn-pink">Бігом закрой</button>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+
+<script>
+  (() => {
+    const emojis = ['🍅', '🥔', '🥒', '🥝', '🍋', '🍌'];
+    const photos = [
+      {name: 'valeriia', url: 'images/valeriia.jpg'},
+      {name: 'vlad', url: 'images/vlad.jpg'}
+    ];
+
+    let mode = 1;
+    let players = [];
+    let currentPlayerIndex = 0;
+    let scores = [];
+    let spinning = false;
+    let soundOn = true;
+    let isTieBreaker = false;
+
+    const setupArea = document.getElementById('setup-area');
+    const modeSelect = document.getElementById('modeSelect');
+    const playerInputs = document.getElementById('playerInputs');
+    const btnStart = document.getElementById('btnStart');
+    const btnBackToMainSetup = document.getElementById('btnBackToMainSetup');
+    const gameArea = document.getElementById('gameArea');
+    const reels = document.querySelectorAll('.reel');
+    const btnSpin = document.getElementById('btnSpin');
+    const scoreboard = document.getElementById('scoreboard');
+    const prizeText = document.getElementById('prizeText');
+    const btnRules = document.getElementById('btnRules');
+    const infoBox = document.getElementById('infoBox');
+    const btnSoundToggle = document.getElementById('btnSoundToggle');
+    const videoWin = document.getElementById('videoWin');
+    const winVideo = document.getElementById('winVideo');
+    const winMessage = document.getElementById('winMessage');
+    const btnCloseVideo = document.getElementById('btnCloseVideo');
+    const btnBackToMode = document.getElementById('btnBackToMode');
+    const btnHome = document.getElementById('btnHome');
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const btnRestart = document.getElementById('btnRestart');
+
+    function renderPlayerInputs() {
+      if (mode === 1) {
+        playerInputs.innerHTML = `
+          <label for="player1Name">Хто воїн 1:</label>
+          <input type="text" id="player1Name" maxlength="12" placeholder="Валерія" value="Валерія"/>
+        `;
+      } else {
+        playerInputs.innerHTML = `
+          <label for="player1Name">Хто ти воїн 1:</label>
+          <input type="text" id="player1Name" maxlength="12" placeholder="Валерія" value="Валерія"/>
+          <br/>
+          <label for="player2Name">Хто ти воїн 2:</label>
+          <input type="text" id="player2Name" maxlength="12" placeholder="Владислав" value="Владислав"/>
+        `;
+      }
+    }
+
+    modeSelect.addEventListener('change', (e) => {
+      mode = Number(e.target.value);
+      renderPlayerInputs();
+    });
+
+    renderPlayerInputs();
+
+    btnStart.addEventListener('click', () => {
+      players = [];
+      const p1NameInput = document.getElementById('player1Name');
+      const p1 = p1NameInput.value.trim() || 'Валерія';
+      players.push(p1);
+
+      if (mode === 2) {
+        const p2NameInput = document.getElementById('player2Name');
+        const p2 = p2NameInput.value.trim() || 'Владислав';
+        players.push(p2);
+      }
+
+      scores = Array(players.length).fill(0);
+      currentPlayerIndex = 0;
+      isTieBreaker = false;
+      setupArea.style.display = 'none';
+      gameArea.style.display = 'flex';
+      btnBackToMode.style.display = 'inline-block';
+      btnHome.style.display = 'inline-block';
+      btnRestart.style.display = 'none';
+      updateScoreboard();
+      prizeText.textContent = '';
+      updateReels(['💩', '💩', '💩']);
+      btnSpin.disabled = false;
+      btnSpin.textContent = `Крутіте 🎰 (${players[currentPlayerIndex]})`;
+      btnSpin.focus();
+    });
+
+    function resetToSetup() {
+        spinning = false;
+        gameArea.style.display = 'none';
+        videoWin.style.display = 'none';
+        if (winVideo.pause) winVideo.pause();
+        winVideo.currentTime = 0;
+
+        const confettiCtx = confettiCanvas.getContext('2d');
+        confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        if (currentConfettiTimeout) clearTimeout(currentConfettiTimeout);
+        if (currentConfettiAnimationId) cancelAnimationFrame(currentConfettiAnimationId);
+        currentConfettiPieces = [];
+
+        setupArea.style.display = 'flex';
+
+        btnHome.style.display = 'none';
+        btnBackToMode.style.display = 'none';
+        btnRestart.style.display = 'none';
+
+        modeSelect.value = "1";
+        mode = 1;
+        renderPlayerInputs();
+        const p1Input = document.getElementById('player1Name');
+        if (p1Input) p1Input.value = 'Ти хто';
+
+        prizeText.textContent = '';
+    }
+
+    btnBackToMode.addEventListener('click', resetToSetup);
+    btnRestart.addEventListener('click', resetToSetup);
+
+    btnHome.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+
+    btnBackToMainSetup.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+
+    btnRules.addEventListener('click', () => {
+      const expanded = btnRules.getAttribute('aria-expanded') === 'true';
+      if (expanded) {
+        infoBox.classList.remove('active');
+        btnRules.setAttribute('aria-expanded', 'false');
+      } else {
+        infoBox.classList.add('active');
+        btnRules.setAttribute('aria-expanded', 'true');
+        infoBox.focus();
+      }
+    });
+
+    btnSoundToggle.addEventListener('click', () => {
+      soundOn = !soundOn;
+      btnSoundToggle.textContent = soundOn ? '🔊 Звук' : '🔇 Вимкнено';
+      btnSoundToggle.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+    });
+
+    function updateScoreboard() {
+      let html = '';
+      players.forEach((p, i) => {
+        html += `<div class="player">${p}: ${scores[i]} балів ${i === currentPlayerIndex && !btnSpin.disabled ? '←' : ''}</div>`;
+      });
+      scoreboard.innerHTML = html;
+    }
+
+    function updateReels(symbols) {
+      for (let i = 0; i < 3; i++) {
+        const reel = reels[i];
+        const sym = symbols[i];
+        if (typeof sym === 'object' && sym.url) {
+          reel.innerHTML = `<img src="${sym.url}" alt="Фото ${sym.name}">`;
+        } else {
+          reel.innerHTML = sym;
+        }
+      }
+    }
+
+    function isPhoto(sym) {
+      return typeof sym === 'object' && sym.url;
+    }
+
+    function generateSpinSymbols() {
+        let rnd = Math.random();
+        const randPhoto = () => photos.length > 0 ? photos[Math.floor(Math.random() * photos.length)] : emojis[Math.floor(Math.random() * emojis.length)];
+        const randEmoji = () => emojis[Math.floor(Math.random() * emojis.length)];
+        if (rnd < 0.075 && photos.length > 0) {
+            const ph = randPhoto(); return [ph, ph, ph];
+        } else if (rnd < 0.275 && photos.length > 0) {
+            const ph = randPhoto();
+            const third = (Math.random() < 0.333 && photos.length > 0) ? randPhoto() : randEmoji();
+            const result = [ph, ph, third];
+            return result.sort(() => 0.5 - Math.random());
+        } else if (rnd < 0.375) {
+            const em = randEmoji(); return [em, em, em];
+        } else if (rnd < 0.525) {
+            const em = randEmoji();
+            const third = (Math.random() < 0.3 && photos.length > 0) ? randPhoto() : randEmoji();
+            const result = [em, em, third];
+            return result.sort(() => 0.5 - Math.random());
+        } else if (rnd < 0.625 && photos.length >= 2) {
+            let p1 = randPhoto();
+            let p2 = randPhoto();
+            while (photos.length > 1 && p1.name === p2.name) p2 = randPhoto();
+            const result = [p1, p2, randEmoji()];
+            return result.sort(() => 0.5 - Math.random());
+        } else if (rnd < 0.775 && photos.length >= 1) {
+            const result = [randPhoto(), randEmoji(), randEmoji()];
+            return result.sort(() => 0.5 - Math.random());
+        } else {
+            const s1 = (Math.random() < 0.3 && photos.length > 0) ? randPhoto() : randEmoji();
+            const s2 = (Math.random() < 0.3 && photos.length > 0) ? randPhoto() : randEmoji();
+            const s3 = (Math.random() < 0.3 && photos.length > 0) ? randPhoto() : randEmoji();
+            return [s1,s2,s3];
+        }
+    }
+
+    function calculatePrize(symbols) {
+        let prize = 0;
+        let message = '';
+        const photoSymbols = symbols.filter(isPhoto);
+        const emojiSymbols = symbols.filter(s => !isPhoto(s));
+        const photoNames = photoSymbols.map(p => p.name);
+        const nameCounts = {};
+        photoNames.forEach(name => { nameCounts[name] = (nameCounts[name] || 0) + 1; });
+        const emojiCounts = {};
+        emojiSymbols.forEach(emoji => { emojiCounts[emoji] = (emojiCounts[emoji] || 0) + 1; });
+
+        if (photoSymbols.length === 3) {
+            const uniquePhotoNamesCount = Object.keys(nameCounts).length;
+            if (uniquePhotoNamesCount === 1) {
+                prize = 52; message = `🎉 Три однакових фото! +52 бала!`;
+            } else if (uniquePhotoNamesCount === 2 && photos.length >= 2) {
+                prize = 27; message = `🌟 2 фото одного типу + 1 іншого! +27 балів!`;
+            }
+        }
+        else if (photoSymbols.length === 2 && emojiSymbols.length === 1) {
+            const uniquePhotoNamesCount = Object.keys(nameCounts).length;
+            if (uniquePhotoNamesCount === 1) {
+                prize = 12; message = `👍 Два однакових фото + смайл! +12 балів!`;
+            } else if (uniquePhotoNamesCount === 2 && photos.length >= 2) {
+                prize = 7; message = `📸 Два різні фото + смайл! +7 балів!`;
+            }
+        }
+
+        if (prize === 0) {
+            if (emojiSymbols.length === 3) {
+                const uniqueEmojiKeys = Object.keys(emojiCounts);
+                if (uniqueEmojiKeys.length === 1) {
+                    prize = 10; message = `🍀 Три однакових смайла! +10 балів!`;
+                } else if (uniqueEmojiKeys.length === 2) {
+                    for (const emoji in emojiCounts) {
+                        if (emojiCounts[emoji] === 2) {
+                            prize = 3; message = `🙂 Два однакових смайла! +3 бали!`; break;
+                        }
+                    }
+                }
+            } else if (emojiSymbols.length === 2 && photoSymbols.length === 1) {
+                if (Object.keys(emojiCounts).length === 1) {
+                    prize = 3; message = `🙂 Два однакових смайла + фото! +3 бали!`;
+                }
+            }
+        }
+        return { prize, message };
+    }
+
+    let currentConfettiTimeout = null;
+    let currentConfettiAnimationId = null;
+    let currentConfettiPieces = [];
+    
+    function launchConfetti() {
+      const confetti = confettiCanvas;
+      const ctx = confetti.getContext('2d');
+      confetti.width = window.innerWidth;
+      confetti.height = window.innerHeight;
+
+      if (currentConfettiTimeout) clearTimeout(currentConfettiTimeout);
+      if (currentConfettiAnimationId) cancelAnimationFrame(currentConfettiAnimationId);
+      currentConfettiPieces = [];
+
+      function randomRange(min, max) { return Math.random() * (max - min) + min; }
+      class Piece {
+          constructor() {
+              this.x = randomRange(0, confetti.width); this.y = randomRange(-20, 0);
+              this.size = randomRange(5, 10); this.speed = randomRange(2, 5);
+              this.angle = randomRange(0, 2 * Math.PI); this.spin = randomRange(0.05, 0.1);
+              this.color = `hsl(${randomRange(0, 360)}, 70%, 60%)`;
+          }
+          update() {
+              this.y += this.speed; this.angle += this.spin;
+              if (this.y > confetti.height + this.size) {
+                  this.y = randomRange(-20, -this.size);
+                  this.x = randomRange(0, confetti.width);
+              }
+          }
+          draw() {
+              ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle);
+              ctx.fillStyle = this.color; ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+              ctx.restore();
+          }
+      }
+      for(let i=0; i<100; i++) { currentConfettiPieces.push(new Piece()); }
+
+      function animateConfetti() {
+          ctx.clearRect(0, 0, confetti.width, confetti.height);
+          if (currentConfettiPieces.length === 0 && !currentConfettiTimeout) {
+              cancelAnimationFrame(currentConfettiAnimationId);
+              currentConfettiAnimationId = null;
+              return;
+          }
+          currentConfettiPieces.forEach(p => { p.update(); p.draw(); });
+          currentConfettiAnimationId = requestAnimationFrame(animateConfetti);
+      }
+      if (currentConfettiAnimationId === null) {
+           animateConfetti();
+      }
+
+      currentConfettiTimeout = setTimeout(() => {
+          currentConfettiPieces = [];
+          currentConfettiTimeout = null;
+      }, 5000);
+    }
+    const spinSound = new Audio('https://interactive-examples.mdn.mozilla.net/media/examples/t-rex-roar.mp3');
+
+    function endGame(winnerIndex) {
+        const winnerName = players[winnerIndex];
+        prizeText.textContent = `🏆 Вітаємо, ${winnerName}! Ви виграли гамно з ${scores[winnerIndex]} балами!`;
+        showWinVideo(winnerName);
+        launchConfetti();
+        btnSpin.disabled = true;
+        btnRestart.style.display = 'inline-block';
+        btnBackToMode.style.display = 'none';
+        updateScoreboard();
+    }
+
+    function checkForWinner() {
+        const p1Score = scores[0];
+        const p2Score = mode === 2 ? scores[1] : -1;
+        const isRoundOver = (mode === 1) || (mode === 2 && currentPlayerIndex === 0);
+
+        if (!isRoundOver) {
+            btnSpin.disabled = false;
+            spinning = false;
+            btnSpin.textContent = `Крутіте 🎰 (${players[currentPlayerIndex]})`;
+            updateScoreboard();
+            return;
+        }
+
+        const p1HasWon = p1Score >= 100;
+        const p2HasWon = p2Score >= 100;
+
+        if (isTieBreaker) {
+            if (p1Score > p2Score) endGame(0);
+            else if (p2Score > p1Score) endGame(1);
+            else {
+                prizeText.textContent = `🤯 Знову нічия! Перемога за ${players[0]} за правом першого ходу!`;
+                endGame(0);
+            }
+            return;
+        }
+
+        if (p1HasWon && !p2HasWon) {
+            endGame(0);
+        } else if (!p1HasWon && p2HasWon) {
+            endGame(1);
+        } else if (p1HasWon && p2HasWon) {
+            if (p1Score > p2Score) {
+                endGame(0);
+            } else if (p2Score > p1Score) {
+                endGame(1);
+            } else {
+                isTieBreaker = true;
+                prizeText.textContent = `⚔️ НІЧИЯ! Додатковий раунд до перемоги!`;
+                btnSpin.disabled = false;
+                spinning = false;
+                btnSpin.textContent = `Крутіте 🎰 (${players[currentPlayerIndex]})`;
+                updateScoreboard();
+            }
+        } else {
+            btnSpin.disabled = false;
+            spinning = false;
+            btnSpin.textContent = `Крутіте 🎰 (${players[currentPlayerIndex]})`;
+            updateScoreboard();
+        }
+    }
+
+    function startSpin() {
+        if (spinning) return;
+        spinning = true;
+        btnSpin.disabled = true;
+        prizeText.textContent = 'Крутіться-мутіться...';
+        reels.forEach((reel, index) => { reel.classList.add(`spinning${(index % 3) + 1}`); });
+
+        let spinCount = 20; let spinInterval = 50; let spinStep = 0;
+        const spinTimer = setInterval(() => {
+            const tempSymbols = [];
+            for(let i=0;i<3;i++) {
+                if(Math.random() < 0.3 && photos.length > 0) { tempSymbols.push(photos[Math.floor(Math.random()*photos.length)]); }
+                else { tempSymbols.push(emojis[Math.floor(Math.random()*emojis.length)]); }
+            }
+            updateReels(tempSymbols);
+            spinStep++;
+            if(spinStep >= spinCount) {
+                clearInterval(spinTimer);
+                reels.forEach((reel, index) => { reel.classList.remove(`spinning${(index % 3) + 1}`); });
+
+                const finalSymbols = generateSpinSymbols();
+                updateReels(finalSymbols);
+                const {prize, message} = calculatePrize(finalSymbols);
+
+                if(prize > 0) {
+                    scores[currentPlayerIndex] += prize;
+                    prizeText.textContent = `${players[currentPlayerIndex]}: ${message}`;
+                    if(soundOn && spinSound.play) { spinSound.currentTime = 0; spinSound.play().catch(e => console.warn("Sound fail:", e)); }
+                } else {
+                    prizeText.textContent = 'Трах егейн!';
+                }
+                
+                if (mode === 2) {
+                    currentPlayerIndex = (currentPlayerIndex + 1) % 2;
+                }
+                
+                updateScoreboard();
+                checkForWinner();
+            }
+        }, spinInterval);
+    }
+
+    btnSpin.addEventListener('click', startSpin);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.code === 'Space' && !spinning && gameArea.style.display === 'flex' &&
+          !infoBox.classList.contains('active') && videoWin.style.display !== 'flex') {
+        event.preventDefault();
+        startSpin();
+      }
+    });
+
+    function showWinVideo(playerName) {
+      winMessage.textContent = `Конгратулатіон, ${playerName}! 🎉`;
+      videoWin.style.display = 'flex';
+      if(winVideo.play) {
+        winVideo.currentTime = 0;
+        winVideo.play().catch(error => console.warn("Video play failed:", error));
+      }
+      btnHome.style.display = 'inline-block';
+    }
+
+    btnCloseVideo.addEventListener('click', () => {
+      videoWin.style.display = 'none';
+      if(winVideo.pause) winVideo.pause();
+      winVideo.currentTime = 0;
+    });
+
+  })();
+</script>
+</body>
+</html>

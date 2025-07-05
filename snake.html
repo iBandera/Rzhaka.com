@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Змія поїдатель гамна</title>
+  <style>
+    body {
+      background: #f5f5dc;
+      color: #e91e63;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 30px;
+      position: relative;
+    }
+
+    canvas {
+      background: #222;
+      border: 6px solid #ff69b4;
+      box-shadow: 0 0 20px #ff69b4;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      color: #e91e63;
+    }
+
+    .btn-home {
+      margin-top: 10px;
+      background: #ff69b4;
+      color: #fff;
+      font-size: 16px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #e91e63;
+      transition: 0.3s;
+    }
+
+    .btn-home:hover {
+      background: #e91e63;
+    }
+
+    .score-info {
+      display: flex;
+      justify-content: space-between;
+      width: 400px;
+      margin-bottom: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #e91e63;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-size: 32px;
+      color: #e91e63;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 20px 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #e91e63;
+      z-index: 1;
+    }
+
+    @keyframes flash {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.6; }
+    }
+
+    .record-animation {
+      animation: flash 0.5s ease-in-out 3;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      margin-top: 15px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      color: #e91e63;
+    }
+
+    .switch input {
+      display: none;
+    }
+
+    .slider {
+      width: 50px;
+      height: 26px;
+      background-color: #ccc;
+      border-radius: 34px;
+      position: relative;
+      transition: background-color 0.2s;
+      margin-right: 10px;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 2px;
+      top: 2px;
+      background-color: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .switch input:checked + .slider {
+      background-color: #ff69b4;
+    }
+
+    .switch input:checked + .slider::before {
+      transform: translateX(24px);
+    }
+
+    .label-text {
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Накормі змію</h1>
+
+  <div class="score-info">
+    <div id="score">Рахінок: 0</div>
+    <div id="best">Рікірд: 0</div>
+  </div>
+
+  <div id="overlay" class="overlay">Камон плей</div>
+
+  <canvas id="game" width="400" height="400"></canvas>
+
+  <label class="switch">
+    <input type="checkbox" id="wrapToggle" onchange="toggleWrap(this)">
+    <span class="slider"></span>
+    <span class="label-text">Коробка: <span id="wrap-status">Вимкнено</span></span>
+  </label>
+
+  <button class="btn-home" onclick="location.href='index.html'">⬅ До Шрека</button>
+
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+
+    // --- ДОДАНО ЗВУКИ ---
+    const soundVlad = new Audio('sounds/EYE.mp3');
+    const soundValeriia = new Audio('sounds/EEE.mp3');
+
+    const gridSize = 20;
+    const tileCount = canvas.width / gridSize;
+
+    let snake = [{ x: 10, y: 10 }];
+    let direction = { x: 0, y: 0 };
+    let lastDirection = { x: 0, y: 0 };
+    let food = { x: 5, y: 5 };
+    let score = 0;
+    let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
+    let gameRunning = false;
+    let foodIsSpecial = false;
+    let foodImage = null;
+    let specialFoodToggle = true;
+    let newRecordThisRound = false;
+
+    let lastFrameTime = 0;
+    let moveDelay = 200;
+    let allowWrap = false;
+
+    const overlay = document.getElementById('overlay');
+
+    let poopEmoji = {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      dx: (Math.random() * 4 - 2) || 1,
+      dy: (Math.random() * 4 - 2) || 1
+    };
+
+    function toggleWrap(checkbox) {
+      allowWrap = checkbox.checked;
+      document.getElementById('wrap-status').textContent = allowWrap ? 'Увімкнено' : 'Вимкнено';
+    }
+
+    function updateScoreDisplay() {
+      document.getElementById('score').textContent = 'Рахінок: ' + score;
+      document.getElementById('best').textContent = 'Рікірд: ' + bestScore;
+    }
+
+    function resetGame() {
+      snake = [{ x: 10, y: 10 }];
+      direction = { x: 0, y: 0 };
+      lastDirection = { x: 0, y: 0 };
+      score = 0;
+      newRecordThisRound = false;
+      specialFoodToggle = true;
+      updateScoreDisplay();
+      placeFood();
+    }
+
+    function placeFood() {
+      food = {
+        x: Math.floor(Math.random() * tileCount),
+        y: Math.floor(Math.random() * tileCount)
+      };
+
+      foodIsSpecial = (score + 1) % 5 === 0;
+
+      if (foodIsSpecial) {
+        foodImage = new Image(50, 50);
+        const name = specialFoodToggle ? 'vlad' : 'valeriia';
+        food.name = name; // Запам'ятовуємо ім'я
+        specialFoodToggle = !specialFoodToggle;
+        foodImage.src = `images/${name}.jpg`;
+        foodImage.onload = () => draw();
+      } else {
+        foodImage = null;
+        food.name = 'default'; // Для звичайної їжі
+      }
+    }
+
+    function draw() {
+      ctx.fillStyle = '#222';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < snake.length; i++) {
+        const seg = snake[i];
+        const shade = Math.floor(255 - (i / snake.length) * 150);
+        ctx.fillStyle = `rgb(${shade}, 0, ${shade})`;
+        ctx.fillRect(seg.x * gridSize, seg.y * gridSize, gridSize - 1, gridSize - 1);
+      }
+
+      if (gameRunning) {
+        if (foodIsSpecial && foodImage && foodImage.complete) {
+          ctx.drawImage(foodImage, food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+        } else {
+          ctx.font = '20px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('💩', food.x * gridSize + gridSize / 2, food.y * gridSize + gridSize / 2);
+        }
+      }
+
+      if (!gameRunning && snake.length === 1 && score === 0) {
+        ctx.font = '32px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('💩', poopEmoji.x, poopEmoji.y);
+        poopEmoji.x += poopEmoji.dx;
+        poopEmoji.y += poopEmoji.dy;
+
+        if (poopEmoji.x <= 0 || poopEmoji.x >= canvas.width) poopEmoji.dx *= -1;
+        if (poopEmoji.y <= 0 || poopEmoji.y >= canvas.height) poopEmoji.dy *= -1;
+
+        if (Math.random() < 0.05) poopEmoji.dx = (Math.random() * 4 - 2) || 1;
+        if (Math.random() < 0.05) poopEmoji.dy = (Math.random() * 4 - 2) || 1;
+      }
+    }
+
+    function gameStep() {
+      if (!gameRunning) return;
+
+      let head = {
+        x: snake[0].x + direction.x,
+        y: snake[0].y + direction.y
+      };
+
+      if (allowWrap) {
+        head.x = (head.x + tileCount) % tileCount;
+        head.y = (head.y + tileCount) % tileCount;
+      } else {
+        if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+          endGame();
+          return;
+        }
+      }
+
+      for (let segment of snake) {
+        if (head.x === segment.x && head.y === segment.y) {
+          endGame();
+          return;
+        }
+      }
+
+      snake.unshift(head);
+
+      if (head.x === food.x && head.y === food.y) {
+        // --- ВІДТВОРЕННЯ ЗВУКУ ПРИ ПОЇДАННІ ---
+        if (food.name === 'vlad') {
+            soundVlad.play();
+        } else if (food.name === 'valeriia') {
+            soundValeriia.play();
+        }
+
+        score++;
+        if (score > bestScore) {
+          bestScore = score;
+          localStorage.setItem('bestScore', bestScore);
+          newRecordThisRound = true;
+        }
+        updateScoreDisplay();
+        placeFood();
+      } else {
+        snake.pop();
+      }
+
+      lastDirection = direction;
+    }
+
+    function endGame() {
+      gameRunning = false;
+      direction = { x: 0, y: 0 };
+      draw();
+      setTimeout(() => {
+        if (newRecordThisRound) {
+          overlay.style.display = 'block';
+          overlay.innerText = 'Емае, новий рекірд!';
+          overlay.classList.add('record-animation');
+          setTimeout(() => {
+            overlay.classList.remove('record-animation');
+            showOverlay('Емае, програли');
+          }, 1000);
+        } else {
+          showOverlay('Емае, програли');
+        }
+      }, 100);
+    }
+
+    function showOverlay(text) {
+      overlay.innerText = text;
+      overlay.style.display = 'block';
+    }
+
+    function hideOverlay() {
+      overlay.style.display = 'none';
+    }
+
+    document.addEventListener('keydown', e => {
+      const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+      if (!gameRunning && keys.includes(e.key)) {
+        resetGame();
+        gameRunning = true;
+        hideOverlay();
+      }
+
+      const keyMap = {
+        ArrowUp: { x: 0, y: -1 },
+        ArrowDown: { x: 0, y: 1 },
+        ArrowLeft: { x: -1, y: 0 },
+        ArrowRight: { x: 1, y: 0 }
+      };
+
+      const newDir = keyMap[e.key];
+      if (newDir && (newDir.x !== -lastDirection.x || newDir.y !== -lastDirection.y)) {
+        direction = newDir;
+      }
+    });
+
+    function loop(timestamp) {
+      if (timestamp - lastFrameTime > moveDelay) {
+        gameStep();
+        draw();
+        lastFrameTime = timestamp;
+      } else {
+        draw();
+      }
+      requestAnimationFrame(loop);
+    }
+
+    updateScoreDisplay();
+    placeFood();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>

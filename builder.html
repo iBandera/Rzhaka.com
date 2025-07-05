@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Гра Будівельник</title>
+    <style>
+        /* CSS код */
+        body {
+            background-color: #f5f5dc; /* Бежевий фон */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .main-menu {
+            text-align: center;
+        }
+
+        h1, h2, p {
+            color: #333;
+        }
+        
+        #main-menu-container h1 {
+            color: #333;
+        }
+        
+        #game-over-screen h2, #game-over-screen p {
+             color: white;
+        }
+
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border: 2px solid #d2b48c;
+            display: none; /* Початково сховано */
+        }
+
+        #game-canvas {
+            display: block;
+            background-color: #f5f5dc;
+        }
+
+        #ui-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .score-container, .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .button, #restart-button {
+            background-color: #ffc0cb; /* Рожеві кнопки */
+            color: #333;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            border: 1px solid #ffb6c1;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+
+        .button:hover, #restart-button:hover {
+            background-color: #ffb6c1;
+        }
+        
+        #main-menu-container .button {
+            font-size: 24px;
+            padding: 15px 30px;
+        }
+
+        #new-record-alert {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background-color: rgba(255, 215, 0, 0.8);
+            padding: 20px 40px;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            opacity: 0;
+            z-index: 100;
+        }
+
+        #new-record-alert.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        #game-over-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 99;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-menu-container" class="main-menu">
+        <h1>Гра "Будівельник Вежі"</h1>
+        <button id="start-game-button" class="button">Почати гру</button>
+    </div>
+
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        <div id="ui-container">
+            <div class="score-container">
+                <span>Рахунок: <span id="score">0</span></span>
+                <span>Рекорд: <span id="high-score">0</span></span>
+            </div>
+            <div class="controls">
+                <label for="volume">Гучність:</label>
+                <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5">
+                <button id="restart-game-button" class="button">Рестарт</button>
+            </div>
+        </div>
+        <div id="new-record-alert" class="hidden">Новий рекорд!</div>
+        <div id="game-over-screen" class="hidden">
+            <h2>Гру закінчено!</h2>
+            <p>Ваш рахунок: <span id="final-score">0</span></p>
+            <button id="restart-button" class="button">Спробувати ще раз</button>
+        </div>
+    </div>
+
+    <audio id="background-music" loop src="sounds/background.mp3"></audio>
+    <audio id="photo1-sound" src="sounds/photo1.mp3"></audio>
+    <audio id="photo2-sound" src="sounds/photo2.mp3"></audio>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    
+    <script>
+        // JavaScript код
+        document.addEventListener('DOMContentLoaded', () => {
+            // Налаштування Matter.js
+            const { Engine, Render, Runner, World, Bodies, Body, Events, Composite } = Matter;
+
+            // Елементи DOM
+            const mainMenuContainer = document.getElementById('main-menu-container');
+            const startGameButton = document.getElementById('start-game-button');
+            const gameContainer = document.getElementById('game-container');
+            const canvas = document.getElementById('game-canvas');
+            const scoreEl = document.getElementById('score');
+            const highScoreEl = document.getElementById('high-score');
+            const volumeSlider = document.getElementById('volume');
+            const backgroundMusic = document.getElementById('background-music');
+            const photo1Sound = document.getElementById('photo1-sound');
+            const photo2Sound = document.getElementById('photo2-sound');
+            const newRecordAlert = document.getElementById('new-record-alert');
+            const gameOverScreen = document.getElementById('game-over-screen');
+            const finalScoreEl = document.getElementById('final-score');
+            const restartButton = document.getElementById('restart-button');
+            const restartGameButton = document.getElementById('restart-game-button');
+
+            const GAME_WIDTH = 800;
+            const GAME_HEIGHT = 600;
+
+            let engine, render, runner;
+            let ground, currentBlock;
+            let score = 0;
+            let highScore = localStorage.getItem('towerBuilderHighScore') || 0;
+            let blockCounter = 0;
+            let isGameOver = false;
+
+            function initGame() {
+                mainMenuContainer.classList.add('hidden');
+                gameContainer.style.display = 'block';
+
+                // Ініціалізація двигуна фізики
+                engine = Engine.create();
+                engine.world.gravity.y = 1;
+
+                // Ініціалізація рендерера
+                render = Render.create({
+                    canvas: canvas,
+                    engine: engine,
+                    options: {
+                        width: GAME_WIDTH,
+                        height: GAME_HEIGHT,
+                        wireframes: false,
+                        background: '#f5f5dc'
+                    }
+                });
+
+                // Створення землі
+                ground = Bodies.rectangle(GAME_WIDTH / 2, GAME_HEIGHT - 25, GAME_WIDTH, 50, {
+                    isStatic: true,
+                    render: { fillStyle: '#d2b48c' }
+                });
+                World.add(engine.world, [ground]);
+
+                // Ініціалізація бігуна
+                runner = Runner.create();
+                Render.run(render);
+                Runner.run(runner, engine);
+
+                // Початкові налаштування
+                isGameOver = false;
+                score = 0;
+                blockCounter = 0;
+                updateScore(0);
+                highScoreEl.textContent = highScore;
+                gameOverScreen.classList.add('hidden');
+                
+                Composite.clear(engine.world, false); // Очищення світу
+                World.add(engine.world, [ground]); // Додаємо землю назад
+
+                setupAudio();
+                spawnBlock();
+                setupControls();
+                setupEventListeners();
+            }
+            
+            function destroyGame() {
+                if (runner) Runner.stop(runner);
+                if (render) Render.stop(render);
+                if (engine) World.clear(engine.world);
+                if (engine) Engine.clear(engine);
+                render.canvas.remove();
+                render.textures = {};
+            }
+
+            function setupAudio() {
+                backgroundMusic.volume = volumeSlider.value;
+                backgroundMusic.play().catch(e => console.error("Для автовідтворення музики потрібна взаємодія з користувачем."));
+
+                volumeSlider.addEventListener('input', (e) => {
+                    backgroundMusic.volume = e.target.value;
+                });
+            }
+
+            function spawnBlock() {
+                if (isGameOver) return;
+                blockCounter++;
+                const blockWidth = 80 + Math.random() * 40;
+                const blockHeight = 60;
+                let texturePath = null;
+                let customSound = null;
+
+                if (blockCounter % 5 === 0) {
+                    if (Math.random() < 0.5) {
+                        texturePath = 'images/photo1.png';
+                        customSound = photo1Sound;
+                    } else {
+                        texturePath = 'images/photo2.png';
+                        customSound = photo2Sound;
+                    }
+                }
+
+                currentBlock = Bodies.rectangle(GAME_WIDTH / 2, 50, blockWidth, blockHeight, {
+                    isStatic: true,
+                    friction: 0.5,
+                    restitution: 0.1,
+                    render: {
+                        fillStyle: texturePath ? 'transparent' : getRandomColor(),
+                        sprite: texturePath ? { texture: texturePath } : null
+                    },
+                    customSound: customSound
+                });
+                World.add(engine.world, currentBlock);
+            }
+
+            let mouseConstraint;
+            function setupControls() {
+                let blockDropped = false;
+
+                // Обробка кліку для скидання блоку
+                canvas.addEventListener('click', () => {
+                    if (isGameOver || blockDropped || !currentBlock || !Body.isStatic(currentBlock)) return;
+                    
+                    blockDropped = true;
+                    Body.setStatic(currentBlock, false);
+                    
+                    // Даємо час на перевірку
+                    setTimeout(() => {
+                        checkPlacement();
+                        blockDropped = false;
+                    }, 1000);
+                });
+
+                // Рух блоку за мишкою
+                canvas.addEventListener('mousemove', (e) => {
+                    if (isGameOver || !currentBlock || !Body.isStatic(currentBlock)) return;
+                    const bounds = canvas.getBoundingClientRect();
+                    const mouseX = e.clientX - bounds.left;
+                    // Обмежуємо рух блоку в межах екрану
+                    const newX = Math.max(currentBlock.bounds.min.x - currentBlock.position.x + mouseX, Math.min(GAME_WIDTH - (currentBlock.bounds.max.x - currentBlock.position.x), mouseX));
+                    Body.setPosition(currentBlock, { x: newX, y: currentBlock.position.y });
+                });
+            }
+
+            function checkPlacement() {
+                setTimeout(() => {
+                    if (isGameOver) return;
+                    
+                    if (currentBlock.position.y < GAME_HEIGHT - (ground.height / 2) && Math.abs(currentBlock.velocity.y) < 0.5) {
+                        updateScore(score + 1);
+                        
+                        if (currentBlock.customSound) {
+                            currentBlock.customSound.play();
+                        }
+                        spawnBlock();
+                    } else {
+                        endGame();
+                    }
+                }, 1500);
+            }
+
+            function updateScore(newScore) {
+                score = newScore;
+                scoreEl.textContent = score;
+            }
+
+            function endGame() {
+                if (isGameOver) return;
+                isGameOver = true;
+                Runner.stop(runner);
+
+                finalScoreEl.textContent = score;
+                gameOverScreen.classList.remove('hidden');
+
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('towerBuilderHighScore', highScore);
+                    highScoreEl.textContent = highScore;
+                    showNewRecordAlert();
+                }
+            }
+
+            function showNewRecordAlert() {
+                newRecordAlert.classList.add('show');
+                setTimeout(() => {
+                    newRecordAlert.classList.remove('show');
+                }, 3000);
+            }
+            
+            function restartFullGame() {
+                if (runner && render) {
+                    Runner.stop(runner);
+                    Render.stop(render);
+                }
+                initGame();
+            }
+
+            function setupEventListeners() {
+                // Перевірка на падіння блоків за межі екрану
+                Events.on(engine, 'afterUpdate', () => {
+                    if (isGameOver) return;
+                    engine.world.bodies.forEach(body => {
+                        if (!body.isStatic && body.position.y > GAME_HEIGHT + 100) {
+                            Composite.remove(engine.world, body);
+                            // Якщо це був поточний блок, який ще не встигли замінити, закінчуємо гру
+                            if (body.id === currentBlock.id && !isGameOver) {
+                                endGame();
+                            }
+                        }
+                    });
+                });
+            }
+
+            function getRandomColor() {
+                const letters = '89ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * letters.length)];
+                }
+                return color;
+            }
+            
+            // Кнопки
+            startGameButton.addEventListener('click', initGame);
+            restartButton.addEventListener('click', restartFullGame);
+            restartGameButton.addEventListener('click', restartFullGame);
+
+        });
+    </script>
+
+</body>
+</html>

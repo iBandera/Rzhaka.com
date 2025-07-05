@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ти просто космос</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f1e6;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      text-decoration: none;
+      background-color: #ff69b4;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+    }
+
+    .back-button:hover {
+      background-color: #ff1493;
+      transform: scale(1.05);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      animation: fadeInBody 1.2s ease;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      animation: slideInTop 1s ease-out;
+    }
+
+    .image-wrapper {
+      animation: fadeIn 2s ease-in;
+    }
+
+    .space-img {
+      width: 300px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
+    }
+
+    .gen-button {
+      padding: 14px 28px;
+      font-size: 18px;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      animation: popIn 1.2s ease;
+    }
+
+    .gen-button:hover {
+      background-color: #ff1493;
+      transform: scale(1.08);
+    }
+
+    .result {
+      margin-top: 30px;
+      font-size: 28px;
+      color: #444;
+      min-height: 36px;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    
+    .volume-control-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+    }
+    
+    .volume-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100px;
+      height: 8px;
+      background: #ddd;
+      outline: none;
+      border-radius: 4px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+
+    .volume-control-container:hover .volume-slider {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #ff69b4;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .volume-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: #ff69b4;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .mute-button {
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .mute-button:hover {
+      background-color: #ff1493;
+      transform: scale(1.1);
+    }
+
+    @keyframes fadeInBody {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideInTop {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      80% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-button">⬅ Shrexy</a>
+
+  <div class="container">
+    <h1>Чо молчім? ❤️</h1>
+    <div class="image-wrapper">
+      <img src="images/lera.png" alt="Космос" class="space-img" />
+    </div>
+    <button class="gen-button" onclick="generateCompliment()">Кнопка</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <audio id="background-music" loop>
+    <source src="sounds/pretty.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div class="volume-control-container">
+    <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1">
+    <button class="mute-button" id="mute-btn" onclick="toggleMute()">🔊</button>
+  </div>
+
+  <script>
+    const compliments = [
+      "Чо за допрос?", 
+      "ЕЕЕЕЕЕЕЕЕЕЕ", 
+      "Крутяк", 
+      "+5000 грн", 
+      "Яка ти козачка, який ти козак?",
+      "А у вас є риба-путана?", 
+      "Еуеууеуеуеуеуеуеу", 
+      "Фотку выбрал мою лучшую?",
+      "Я ничего изменять не собираюсь", 
+      "Космос", 
+      "Сонечко", 
+      "Ти - чудо!", 
+      "Зачіска - бомба!",
+      "Нереалка", 
+      "Крутишка", 
+      "Хто такий пес патрон?", 
+      "Зіронька", 
+      "Тралалеро тралала",
+      "Посміхнись", 
+      "Смайл", 
+      "Красотка", 
+      "Ти сьогодні як завжди! Не оторвать глаз",
+      "Как обично самая красивая", 
+      "Твоя посмішка сьогодні — причина моєї розсіяності",
+      "Ти — як ця мелодія, хочеться слухати знову і знову",
+      "Коли ти посміхаєшся, зірки трохи заздрять",
+      "Гарна українка Я,  Я танцюю гопака"
+    ];
+
+    let shuffled = [...compliments];
+    let index = 0;
+
+    const audio = document.getElementById("background-music");
+    const muteBtn = document.getElementById("mute-btn");
+    const volumeSlider = document.getElementById("volume-slider");
+    
+    let lastVolume = 1;
+    audio.volume = 1;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    shuffle(shuffled);
+
+    function generateCompliment() {
+      if (audio.paused) {
+        audio.play().catch(error => console.log("User needs to interact with the document first."));
+      }
+
+      const resultDiv = document.getElementById("result");
+
+      if (index >= shuffled.length) {
+        shuffle(shuffled);
+        index = 0;
+      }
+
+      resultDiv.style.opacity = 0;
+      setTimeout(() => {
+        resultDiv.textContent = shuffled[index];
+        resultDiv.style.opacity = 1;
+        index++;
+      }, 200);
+    }
+    
+    volumeSlider.addEventListener('input', (e) => {
+      const newVolume = parseFloat(e.target.value);
+      audio.volume = newVolume;
+      audio.muted = newVolume === 0;
+
+      if (newVolume > 0) {
+        lastVolume = newVolume;
+      }
+      updateMuteButtonIcon();
+    });
+
+    function toggleMute() {
+      if (audio.volume > 0) {
+        // Якщо звук є, вимикаємо
+        audio.volume = 0;
+        volumeSlider.value = 0;
+        audio.muted = true;
+      } else {
+        audio.volume = lastVolume;
+        volumeSlider.value = lastVolume;
+        audio.muted = false;
+      }
+      updateMuteButtonIcon();
+    }
+    
+    function updateMuteButtonIcon() {
+        if (audio.volume === 0 || audio.muted) {
+            muteBtn.textContent = "🔇";
+        } else {
+            muteBtn.textContent = "🔊";
+        }
+    }
+    
+    updateMuteButtonIcon();
+
+  </script>
+</body>
+</html>
