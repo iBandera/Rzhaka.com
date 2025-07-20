@@ -215,7 +215,7 @@
     <div id="description-container"></div>
 
     <div class="footer-nav">
-        <a href="news.html" class="main-button">До новин 🌸</a>
+        <a href="index.html" class="main-button">УДУ 🌸</a>
     </div>
 
     <script>
@@ -276,7 +276,6 @@
             let currentDescription = descriptions[slideIndex-1];
             descriptionContainer.innerHTML = `<h3>${currentDescription.title}</h3><p>${currentDescription.text}</p>`;
             
-            // Перезапуск анімації для блоку опису
             descriptionContainer.style.animation = 'none';
             void descriptionContainer.offsetWidth; // Тригер рефлоу
             descriptionContainer.style.animation = 'fadeInUp 1s ease-out';

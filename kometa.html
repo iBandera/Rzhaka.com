@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чудо-комета</title>
+    
+    <style>
+        body {
+            background-color: #f5f5dc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .main-title {
+            font-size: 3rem;
+            color: #5d4037;
+            margin-bottom: 30px;
+            cursor: pointer;
+            animation: slide-down 1.2s ease-out forwards;
+            opacity: 0;
+            transition: all 0.5s ease-in-out;
+            overflow: hidden;
+        }
+
+        .main-title.hidden {
+            opacity: 0;
+            font-size: 0;
+            margin: 0;
+            transform: translateY(-50px);
+        }
+
+        .image-container {
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: zoom-in 1.5s 0.5s ease-out forwards;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .image-container:hover img {
+            transform: scale(1.05);
+        }
+
+        .news-button {
+            display: inline-block;
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            background-color: #ff8fab;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.4);
+            transition: background-color 0.3s, transform 0.3s;
+            opacity: 0;
+            animation: slide-up 1.2s 1s ease-out forwards;
+        }
+
+        .news-button:hover {
+            background-color: #ff69b4;
+            transform: translateY(-3px);
+        }
+
+        @keyframes slide-down {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoom-in {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="main-title" id="clickable-title">Фото чудо-комети з місячної експедиції 🚀</h1>
+
+        <div class="image-container">
+            <img src="images/cometa1.jpg" alt="Яскрава комета в нічному небі">
+        </div>
+
+        <a href="news.html" class="news-button">До новин 📰</a>
+    </div>
+
+    <script>
+        const title = document.getElementById('clickable-title');
+
+        title.addEventListener('click', function() {
+            title.classList.add('hidden');
+        });
+    </script>
+
+</body>
+</html>
