@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Віршик чи то поезія 2.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- ЗМІНЕНО: Стилі для body --- */
+        body {
+            background: linear-gradient(135deg, #fdfbfb 0%, #f5f5dc 100%);
+            font-family: 'Comfortaa', cursive;
+            margin: 0;
+            padding: 40px 20px; /* Додано відступи для простору */
+            box-sizing: border-box; /* Для правильного розрахунку розмірів */
+            min-height: 100vh;
+            /* Властивості display:flex, justify-content, align-items та overflow:hidden видалено */
+        }
+
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        /* --- ЗМІНЕНО: Стилі для .poem-container --- */
+        .poem-container {
+            animation: fadeInSlideUp 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+            text-align: center;
+            padding: 20px;
+            max-width: 700px; /* Обмеження ширини для кращого вигляду */
+            margin: 0 auto; /* Горизонтальне центрування */
+        }
+
+        .poem-window {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 192, 203, 0.5);
+            border-radius: 20px;
+            padding: 40px 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .poem-window:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .poem-window p {
+            font-size: 1.25em;
+            line-height: 1.9;
+            color: #333;
+            margin: 0;
+        }
+
+        .pink {
+            color: #FF1493;
+            font-weight: 700;
+            text-shadow: 0 0 5px rgba(255, 20, 147, 0.3);
+        }
+
+        .hyphen {
+            color: #DB7093;
+            font-weight: 700;
+        }
+
+        #answerForm {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #answerInput {
+            flex-grow: 1;
+            max-width: 300px;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: 'Comfortaa', cursive;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        #answerInput:focus {
+            outline: none;
+            border-color: #ffc0cb;
+            box-shadow: 0 0 8px rgba(255, 105, 180, 0.3);
+        }
+
+        #answerInput.shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        .pink-button {
+            background-color: #FF69B4;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 700;
+            font-family: 'Comfortaa', cursive;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+        }
+
+        .pink-button:hover {
+            background-color: #FF1493;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.5);
+        }
+
+        #feedback {
+            margin-top: 15px;
+            font-size: 1.1em;
+            font-weight: 700;
+            height: 20px;
+            opacity: 0;
+            transition: color 0.3s, opacity 0.5s;
+        }
+
+        #feedback.visible {
+            opacity: 1;
+        }
+
+        #feedback.correct {
+            color: #28a745;
+        }
+
+        #feedback.incorrect {
+            color: #dc3545;
+        }
+        
+        /* --- ЗМІНЕНО: Стилі для .footer --- */
+        .footer {
+            /* Властивості position:absolute та bottom видалено */
+            width: 100%;
+            text-align: center;
+            animation: fadeInSlideUp 1.2s 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+            margin-top: 40px; /* Додано відступ зверху */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="poem-container">
+        <div class="poem-window">
+            <p>
+                Напитись голосу <span class="pink">т</span>вого,<br>
+                Того закоханого струму,<br>
+                Тієї радості і суму,<br>
+                Чаклунства дивного того.<br>
+                Завмерти, слухати, не д<span class="pink">и</span>хать,<br>
+                Зненацька думку перервать.<br>
+                Тієї паузи безвихідь<br>
+                <span class="pink">К</span>расивим жартом рятувать.<br>
+                Сл<span class="pink">о</span>ва натягувать, як луки,<br>
+                Щоб вча<span class="pink">с</span>но збити на льоту<br>
+                Нерозшифрованої муки<br>
+                Невідворотну <span class="pink">м</span>илоту.<br>
+                Триматись вільн<span class="pink">о</span> й незалежно,<br>
+                Перемовчати: хто кого.<br>
+                І так беззахисно й безмежно<br>
+                Чекати голо<span class="pink">с</span>у твого.<br>
+                Ліна Костенко<br>
+            </p>
+        </div>
+
+        <div class="answer-section">
+            <form id="answerForm">
+                <input type="text" id="answerInput" placeholder="Вводім відповідь тута">
+                <button type="submit" class="pink-button">Переверка</button>
+            </form>
+            <p id="feedback"></p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="news.html" class="pink-button">УДУ</a>
+    </div>
+
+    <audio id="success-sound" src="sounds/cudo.mp3"></audio>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('answerForm');
+            const input = document.getElementById('answerInput');
+            const feedback = document.getElementById('feedback');
+            const successSound = document.getElementById('success-sound');
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                input.classList.remove('shake');
+                feedback.classList.remove('visible');
+
+                const userAnswer = input.value
+                    .toLowerCase()
+                    .replace(/[\s-]/g, '')
+                    .replace(/!$/, '');
+
+                const correctAnswer = 'тикосмос'; 
+
+                setTimeout(() => {
+                    if (userAnswer === correctAnswer) {
+                        // --- ЗМІНЕНО: Використання innerHTML для коректного відображення посилання ---
+                        feedback.innerHTML = '<a href="kometa.html" style="color: #28a745; text-decoration: none; font-weight: 700; text-shadow: 0 0 8px rgba(40, 167, 69, 0.5);">Чудо-комета❤️</a>';
+                        feedback.className = 'correct visible';
+                        triggerConfetti();
+                        
+                        successSound.currentTime = 0;
+                        successSound.play().catch(error => {
+                            console.error("Помилка відтворення аудіо:", error);
+                        });
+
+                    } else {
+                        feedback.textContent = 'Прочитай ще, відповідь у вірші';
+                        feedback.className = 'incorrect visible';
+                        input.classList.add('shake');
+                    }
+                }, 100);
+            });
+
+            function triggerConfetti() {
+                const count = 200;
+                const defaults = { origin: { y: 0.7 } };
+
+                function fire(particleRatio, opts) {
+                    confetti(Object.assign({}, defaults, opts, {
+                        particleCount: Math.floor(count * particleRatio)
+                    }));
+                }
+
+                fire(0.25, { spread: 26, startVelocity: 55 });
+                fire(0.2, { spread: 60 });
+                fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+                fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+                fire(0.1, { spread: 120, startVelocity: 45 });
+            }
+        });
+    </script>
+
+</body>
+</html>
