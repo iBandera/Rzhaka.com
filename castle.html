@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Топ 5 замків світу</title>
+    <style>
+        body {
+            background-color: #f8f4e9; /* Дуже світлий, теплий бежевий фон */
+            font-family: 'Georgia', 'Times New Roman', Times, serif; /* Більш класичний шрифт */
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 1.2s ease-out;
+        }
+
+        h1 {
+            color: #ffb6c1; /* Ніжно-рожевий колір */
+            font-size: 2.8em;
+            font-weight: normal;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+            font-family: 'Playfair Display', serif; /* A more elegant and classic font */
+        }
+
+        /* Google Fonts Import */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+
+
+        .slideshow-wrapper {
+            max-width: 960px;
+            margin: auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slideshow-container {
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            /* Height will be managed by JS, but give it a starting point */
+            height: 500px; /* Default height, will be adjusted by JS */
+            transition: height 0.5s ease-in-out;
+        }
+
+        .mySlides {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Fade transition */
+            background-color: #f8f4e9;
+            visibility: hidden; /* Hidden from screen readers and interaction when not active */
+            z-index: 0; /* Ensures non-active slides are behind */
+            display: flex; /* For centering content within the slide */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mySlides.active-slide {
+            opacity: 1;
+            visibility: visible;
+            z-index: 1; /* Bring active slide to front */
+        }
+
+        .mySlides img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            vertical-align: middle;
+            animation: kenBurns 25s infinite alternate;
+        }
+
+        /* --- СТИЛІ ДЛЯ ПЕРЕВЕРТАННЯ КАРТКИ --- */
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 100%;
+            perspective: 1200px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.9s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+            background-color: #f8f4e9;
+        }
+
+        .flip-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            animation: none; /* Disable Ken Burns for flip card images */
+        }
+        /* --- КІНЕЦЬ СТИЛІВ ДЛЯ ПЕРЕВЕРТАННЯ --- */
+
+        #description-container {
+            max-width: 800px;
+            margin: 25px auto 0 auto;
+            padding: 25px 30px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            backdrop-filter: blur(5px);
+            animation: slideUp 1s ease-out;
+        }
+
+        #description-container h3 {
+            color: #6a6356;
+            margin-top: 0;
+            font-size: 1.5em;
+            font-weight: normal;
+        }
+
+        #description-container p {
+            color: #5c5549;
+            font-size: 1.05em;
+            line-height: 1.7;
+        }
+
+        /* --- KEYFRAME ANIMATIONS --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes kenBurns {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.15) translate(2%, -2%); }
+        }
+        /* --- END KEYFRAME ANIMATIONS --- */
+
+
+        .prev, .next {
+            cursor: pointer;
+            color: #a39b8b;
+            font-weight: bold;
+            font-size: 28px;
+            transition: 0.4s ease;
+            user-select: none;
+            padding: 10px;
+            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
+        }
+        .prev { margin-right: 15px; }
+        .next { margin-left: 15px; }
+
+        .prev:hover, .next:hover {
+            color: #7d7463;
+        }
+
+        .dots-container {
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        .dot {
+            cursor: pointer;
+            height: 12px;
+            width: 12px;
+            margin: 0 4px;
+            background-color: #ccc5b9;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+
+        .active, .dot:hover {
+            background-color: #a39b8b;
+        }
+
+        .footer-nav {
+            text-align: center;
+            margin-top: 30px;
+            padding-bottom: 15px;
+        }
+        .main-button {
+            background-color: #b9b0a1;
+            border: none;
+            color: white;
+            padding: 12px 28px;
+            text-decoration: none;
+            font-size: 14px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        }
+
+        .main-button:hover {
+            background-color: #a39b8b;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Топ 5 замків світу</h1>
+    </div>
+
+    <div class="slideshow-wrapper">
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+
+        <div class="slideshow-container">
+            <div class="mySlides">
+                <img src="https://turpoisk.ua/images/blog/zamok-nosh/zamok112.jpg" alt="Замок Нойшванштайн">
+            </div>
+            <div class="mySlides">
+                <img src="https://wallpaper.forfun.com/fetch/aa/aa8e70e865a1bbec7de8ef566a376a45.jpeg" alt="Замок Мон-Сен-Мішель">
+            </div>
+            <div class="mySlides">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpxbwKhmFjstWqO3puL8pibIg4tOxyMAzm9Q&s" alt="Замок Хімедзі">
+            </div>
+            <div class="mySlides">
+                <img src="https://img.wallpapic.com.ua/i1855-047-521/medium/karliv-mist-praga-zamok-cheska-respublika-shpalery.jpg" alt="Празький град">
+            </div>
+
+            <div class="mySlides">
+                <div class="flip-card" id="chambord-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img src="images/castle1.jpg" alt="Замок Шамбор - Вид 1">
+                        </div>
+                        <div class="flip-card-back">
+                            <img src="images/castle2.jpg" alt="Замок Шамбор - Вид 2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+
+    <div class="dots-container">
+        <span class="dot" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot" onclick="currentSlide(5)"></span>
+    </div>
+
+    <div id="description-container"></div>
+
+    <div class="footer-nav">
+        <a href="news.html" class="main-button">До новин 📰</a>
+    </div>
+
+    <script>
+        const descriptions = [
+            {
+                title: "Замок Нойшванштайн, Німеччина",
+                text: "Справжній казковий замок, збудований за наказом баварського короля Людвіга II у XIX столітті. Він став джерелом натхнення для Волта Діснея при створенні замку Сплячої красуні в Діснейленді. Розташований на скелі серед альпійських лісів, Нойшванштайн є втіленням романтичних ідеалів та захоплення середньовічною культурою. Інтер'єри замку прикрашені сценами з опер Ріхарда Вагнера.",
+                aspectRatio: 1.5 // 1280 / 853 ≈ 1.5
+            },
+            {
+                title: "Мон-Сен-Мішель, Франція",
+                text: "Це унікальне абатство-фортеця, розташоване на скелястому острові біля узбережжя Нормандії. Під час найвищих припливів у Європі острів повністю відрізається від материка, перетворюючись на неприступну цитадель. Його історія сягає VIII століття, а готична архітектура абатства, що ніби здіймається до небес, є одним з найвидатніших досягнень середньовічного будівництва та об'єктом Світової спадщини ЮНЕСКО.",
+                aspectRatio: 1.5 // 1280 / 853 ≈ 1.5
+            },
+            {
+                title: "Замок Хімедзі, Японія",
+                text: "Також відомий як «Замок білої чаплі» через свою сліпучо-білу зовнішність та витончені форми, що нагадують птаха в польоті. Це один з найстаріших і найкраще збережених замків Японії, який ніколи не руйнувався війнами чи стихійними лихами. Його складний комплекс з 83 будівель, що включає лабіринти стежок та оборонні споруди, є блискучим зразком японської замкової архітектури початку XVII століття.",
+                aspectRatio: 1.5 // 1280 / 853 ≈ 1.5
+            },
+            {
+                title: "Празький град, Чехія",
+                text: "Занесений до Книги рекордів Гіннеса як найбільший замковий комплекс у світі, Празький град є справжнім містом у місті. Його історія налічує понад тисячу років, протягом яких він був резиденцією королів Богемії, імператорів Священної Римської імперії, а сьогодні — президента Чехії. На його території розташовані палаци, храми, сади та визначні пам'ятки, серед яких величний Собор Святого Віта.",
+                aspectRatio: 1.5 // 1280 / 853 ≈ 1.5
+            },
+            {
+                title: "Замок Лери",
+                text: "Шедевр епохи Ренесансу в долині Оболонь, вражає своєю унікальною архітектурою, в якій як вважається, брав участь сам Леонардо да Вінчі. Центральним елементом є башня, де живе принцеса 👸 Я точно знаю що ВОНА - ЧУДО! 🫶",
+                aspectRatio: 1.5
+            }
+        ];
+
+        let slideIndex = 1;
+        let slides = document.getElementsByClassName("mySlides");
+        const slideshowContainer = document.querySelector(".slideshow-container");
+
+        function getImageAspectRatio(imgElement, callback) {
+            const tempImg = new Image();
+            tempImg.src = imgElement.src;
+
+            if (tempImg.complete) { // Check if image is already loaded
+                callback(tempImg.naturalWidth / tempImg.naturalHeight);
+            } else {
+                tempImg.onload = () => {
+                    callback(tempImg.naturalWidth / tempImg.naturalHeight);
+                };
+                tempImg.onerror = () => {
+                    console.error("Помилка завантаження зображення:", imgElement.src);
+                    callback(null);
+                };
+            }
+        }
+
+        function updateContainerHeight(index) {
+            const currentSlideElement = slides[index - 1];
+            let imgElement;
+
+            if (currentSlideElement.querySelector('.flip-card')) {
+                const flipCardInner = currentSlideElement.querySelector('.flip-card-inner');
+                if (flipCardInner.classList.contains('is-flipped')) {
+                    imgElement = flipCardInner.querySelector('.flip-card-back img');
+                } else {
+                    imgElement = flipCardInner.querySelector('.flip-card-front img');
+                }
+            } else {
+                imgElement = currentSlideElement.querySelector('img');
+            }
+
+            if (imgElement) {
+                getImageAspectRatio(imgElement, (aspect) => {
+                    if (aspect) {
+                        const containerWidth = slideshowContainer.offsetWidth;
+                        const calculatedHeight = Math.min((containerWidth / aspect), window.innerHeight * 0.8);
+                        slideshowContainer.style.height = calculatedHeight + 'px';
+                    } else {
+                        const predefinedAspect = descriptions[index - 1].aspectRatio;
+                        if (predefinedAspect) {
+                            const containerWidth = slideshowContainer.offsetWidth;
+                            const calculatedHeight = Math.min((containerWidth / predefinedAspect), window.innerHeight * 0.8);
+                            slideshowContainer.style.height = calculatedHeight + 'px';
+                        } else {
+                            slideshowContainer.style.height = '500px';
+                        }
+                    }
+                });
+            } else {
+                const predefinedAspect = descriptions[index - 1].aspectRatio;
+                if (predefinedAspect) {
+                    const containerWidth = slideshowContainer.offsetWidth;
+                    const calculatedHeight = Math.min((containerWidth / predefinedAspect), window.innerHeight * 0.8);
+                    slideshowContainer.style.height = calculatedHeight + 'px';
+                } else {
+                    slideshowContainer.style.height = '500px';
+                }
+            }
+        }
+
+        // Functions to change slides
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let dots = document.getElementsByClassName("dot");
+            let descriptionContainer = document.getElementById("description-container");
+
+            // Handle wrapping around slides
+            if (n > slides.length) { slideIndex = 1; }
+            if (n < 1) { slideIndex = slides.length; }
+
+            // Get the currently active slide (if any)
+            const currentActiveSlide = document.querySelector('.mySlides.active-slide');
+
+            // Deactivate all slides and dots first
+            for (i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('active-slide');
+                slides[i].style.zIndex = 0; // Ensure they are behind
+                // We'll hide them later, after the new slide becomes visible
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+
+            // Activate the new slide
+            const newActiveSlide = slides[slideIndex - 1];
+            newActiveSlide.style.visibility = 'visible'; // Make visible immediately for transition
+            newActiveSlide.style.zIndex = 1; // Bring to front
+            newActiveSlide.classList.add('active-slide');
+
+            // Hide the old slide after a short delay (matching transition duration)
+            if (currentActiveSlide && currentActiveSlide !== newActiveSlide) {
+                // Ensure the old slide fades out before becoming truly hidden
+                setTimeout(() => {
+                    currentActiveSlide.style.visibility = 'hidden';
+                }, 1000); // Matches the 1s opacity transition
+            }
+
+
+            // Update description
+            let currentDescription = descriptions[slideIndex - 1];
+            descriptionContainer.innerHTML = `<h3>${currentDescription.title}</h3><p>${currentDescription.text}</p>`;
+
+            // Re-apply slideUp animation for description container
+            descriptionContainer.style.animation = 'none'; // Reset animation
+            void descriptionContainer.offsetWidth; // Trigger reflow (important for re-applying animation)
+            descriptionContainer.style.animation = 'slideUp 1s ease-out'; // Apply animation
+
+            // Activate the current dot
+            dots[slideIndex - 1].className += " active";
+
+            // Update container height
+            updateContainerHeight(slideIndex);
+        }
+
+        // --- Event Listeners ---
+        // Initial call to show the first slide
+        showSlides(slideIndex);
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') {
+                plusSlides(-1);
+            } else if (event.key === 'ArrowRight') {
+                plusSlides(1);
+            }
+        });
+
+        const chambordCard = document.getElementById('chambord-card');
+        if (chambordCard) {
+            chambordCard.addEventListener('click', function() {
+                this.querySelector('.flip-card-inner').classList.toggle('is-flipped');
+                // Re-calculate height after flip animation
+                setTimeout(() => updateContainerHeight(slideIndex), 900); // Match flip-card-inner transition duration
+            });
+        }
+
+        window.addEventListener('resize', () => {
+            updateContainerHeight(slideIndex);
+        });
+
+        // Preload images to ensure aspect ratio calculation is accurate
+        document.querySelectorAll('.mySlides img').forEach(img => {
+            // Check if image is already cached/loaded
+            if (!img.complete) {
+                img.onload = () => {
+                    // If this image is the currently active one, update height
+                    if (img.closest('.mySlides').classList.contains('active-slide')) {
+                        updateContainerHeight(slideIndex);
+                    }
+                };
+            }
+        });
+    </script>
+
+</body>
+</html>
