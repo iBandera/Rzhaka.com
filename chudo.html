@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8 Чудес Світу</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f5f5dc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 40px;
+            color: #2c3e50;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            max-width: 800px;
+            margin: auto;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: #fff; /* Додамо фон для обгортки */
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+            /* Розміщення елементів слайду вже не потрібне, оскільки вони йдуть по черзі */
+        }
+
+        .image-container {
+            max-height: 500px; /* Обмеження висоти контейнера для зображення */
+            overflow-y: auto;   /* Вертикальна прокрутка з'являється тільки при потребі */
+            background-color: #000; /* Чорний фон для контейнера зображення */
+            display: flex;
+            align-items: flex-start; /* Зображення буде починатись зверху */
+            justify-content: center;
+        }
+
+        .slide img {
+            width: 100%;       /* Зображення займає всю ширину контейнера */
+            height: auto;      /* Висота автоматична для збереження пропорцій */
+            display: block;
+        }
+
+        .slide-content {
+            background: #2c3e50; /* Темно-синій фон для кращого контрасту */
+            color: white;
+            padding: 20px 25px;
+            box-sizing: border-box;
+        }
+
+        .slide-content h2 {
+            margin: 0 0 10px 0;
+            font-size: 2.2em;
+            color: #ffc0cb; /* Рожевий акцент для заголовку */
+        }
+
+        .slide-content p {
+            margin: 0;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 250px; /* Фіксована позиція для кнопок у центрі зони зображення */
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            z-index: 10;
+            pointer-events: none; /* Дозволяє клікам "проходити" крізь контейнер */
+        }
+
+        .slider-nav button {
+            background-color: rgba(255, 192, 203, 0.8);
+            border: none;
+            padding: 12px 18px;
+            font-size: 28px;
+            cursor: pointer;
+            border-radius: 50%;
+            margin: 0 15px;
+            color: #fff;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            pointer-events: auto; /* Включаємо взаємодію для самих кнопок */
+        }
+
+        .slider-nav button:hover {
+            background-color: #ff99ac;
+            transform: scale(1.1);
+        }
+
+        .slider-nav button:active {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="title">8 Чудес Світу</h1>
+
+        <div class="slider-wrapper">
+            <div class="slider">
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1581333370617-954241dd91d4?q=80&w=1974&auto=format&fit=crop" alt="Александрійський маяк">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Александрійський маяк</h2>
+                        <p>8 місце. Цей маяк був не просто навігаційною спорудою, а справжнім технологічним проривом свого часу. Його світло рятувало життя мореплавців і символізувало велич Александрії.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1596624926521-9a742c3b5c68?q=80&w=1931&auto=format&fit=crop" alt="Колос Родоський">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Колос Родоський</h2>
+                        <p>7 місце. Гігантська статуя бога сонця Геліоса, що височіла над входом у гавань Родосу. Вона уособлювала військову перемогу та економічну могутність острова.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                     <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1631124433069-b54cb4a1617c?q=80&w=1935&auto=format&fit=crop" alt="Мавзолей в Галікарнасі">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Мавзолей в Галікарнасі</h2>
+                        <p>6 місце. Велична гробниця сатрапа Мавсола, яка вражала гармонією архітектури та скульптури. Це був пам'ятник коханню його дружини Артемісії.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1569949381669-ecf31ae8e613?q=80&w=1974&auto=format&fit=crop" alt="Храм Артеміди в Ефесі">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Храм Артеміди в Ефесі</h2>
+                        <p>5 місце. Цей величний храм, присвячений богині родючості, слугував релігійним та фінансовим центром стародавнього світу.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1606560155169-26d41861e0e8?q=80&w=1974&auto=format&fit=crop" alt="Статуя Зевса в Олімпії">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Статуя Зевса в Олімпії</h2>
+                        <p>4 місце. Створена геніальним Фідієм, ця статуя бога-громовержця зі слонової кістки та золота була вершиною античного мистецтва.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1627888639922-b64893a26ab5?q=80&w=1964&auto=format&fit=crop" alt="Висячі сади Семіраміди">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Висячі сади Семіраміди</h2>
+                        <p>3 місце. Легендарний оазис зелені серед Вавилону, створений царем Навуходоносором II для своєї коханої дружини. Диво інженерної думки.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1555899434-94d13685d54a?q=80&w=1974&auto=format&fit=crop" alt="Піраміда Хеопса">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Піраміда Хеопса</h2>
+                        <p>2 місце. Єдине з Семи чудес, що збереглося до наших днів. Монументальна гробниця фараона, що вражає своєю математичною точністю.</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1502602898657-3e91760c0337?q=80&w=2070&auto=format&fit=crop" alt="Чудо-Лера">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Чудо-Лера ✨</h2>
+                        <p>Ну і звичайно 1 місце. Найголовніше і найцінніше чудо. Поєднує в собі красу, розум, доброту та силу духу. Її посмішка здатна розвіяти будь-які хмари.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slider-nav">
+                <button class="prev">&#10094;</button>
+                <button class="next">&#10095;</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider = document.querySelector('.slider');
+            const slides = document.querySelectorAll('.slide');
+            const prevButton = document.querySelector('.prev');
+            const nextButton = document.querySelector('.next');
+
+            let currentIndex = 0;
+            const slideCount = slides.length;
+
+            function updateSlider() {
+                slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+            }
+
+            function showNextSlide() {
+                currentIndex = (currentIndex + 1) % slideCount;
+                updateSlider();
+            }
+
+            function showPrevSlide() {
+                currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+                updateSlider();
+            }
+
+            nextButton.addEventListener('click', showNextSlide);
+            prevButton.addEventListener('click', showPrevSlide);
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowRight') {
+                    showNextSlide();
+                } else if (event.key === 'ArrowLeft') {
+                    showPrevSlide();
+                }
+            });
+
+            updateSlider();
+        });
+    </script>
+
+</body>
+</html>

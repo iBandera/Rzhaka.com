@@ -79,47 +79,47 @@
     body.menu-open #side-menu {
       transform: translateX(0);
     }
-    
+
     #side-menu ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
+      list-style: none;
+      padding: 0;
+      margin: 0;
     }
 
     #side-menu ul li a {
-        display: block;
-        padding: 15px 20px;
-        color: white;
-        text-decoration: none;
-        font-size: 18px;
-        font-weight: bold;
-        transition: background-color 0.3s ease, padding-left 0.3s ease;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      display: block;
+      padding: 15px 20px;
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      transition: background-color 0.3s ease, padding-left 0.3s ease;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
-    
+
     #side-menu ul li a:hover {
-        background-color: rgba(255, 20, 147, 0.9);
-        padding-left: 30px;
+      background-color: rgba(255, 20, 147, 0.9);
+      padding-left: 30px;
     }
 
     #menu-toggle {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        font-size: 32px;
-        color: white;
-        z-index: 1002;
-        cursor: pointer;
-        transition: filter 0.3s ease, transform 0.4s ease-in-out;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 32px;
+      color: white;
+      z-index: 1002;
+      cursor: pointer;
+      transition: filter 0.3s ease, transform 0.4s ease-in-out;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
     }
-    
+
     body.menu-open #menu-toggle {
-        transform: translateX(250px);
+      transform: translateX(250px);
     }
 
     #menu-toggle:hover {
-        filter: drop-shadow(0 0 8px #9b7de0);
+      filter: drop-shadow(0 0 8px #9b7de0);
     }
 
     .floating-icon {
@@ -134,7 +134,6 @@
       filter: drop-shadow(0 0 12px hotpink);
       cursor: pointer;
     }
-
   </style>
 </head>
 <body>
@@ -154,7 +153,7 @@
       <li><a href="world.html" title="Дякую мухе">🌍 Ми пізнаємо світ</a></li>
     </ul>
   </div>
-  
+
   <div id="menu-toggle">☰</div>
 
   <div class="content">
@@ -163,17 +162,18 @@
     <a href="content.html" class="button">Гамно вопрос</a>
   </div>
 
-  <a href="quest.html" id="floating-letter" class="floating-icon" title="Таємний квест">💌</a>
-  <a href="princess.html" id="floating-princess" class="floating-icon" title="Принцеса">🎀</a>
-  <a href="cometa.html" id="floating-comet" class="floating-icon" title="Комета">☄️</a>
+  <!-- Плаваючі емодзі -->
+  <a href="quest.html" class="floating-icon" title="Таємний квест">💌</a>
+  <a href="princess.html" class="floating-icon" title="Принцеса">🎀</a>
+  <a href="cometa.html" class="floating-icon" title="Комета">☄️</a>
   <a href="beauty.html" class="floating-icon" title="Краса">📜</a>
   <a href="kvitu.html" class="floating-icon" title="Квіти">🌸</a>
+  <a href="castle.html" class="floating-icon" title="Замок">🏰</a>
 
   <script>
     const body = document.body;
     const sideMenu = document.getElementById('side-menu');
     const menuToggle = document.getElementById('menu-toggle');
-    const content = document.querySelector('.content');
 
     function toggleMenu() {
       body.classList.toggle('menu-open');
@@ -195,15 +195,15 @@
     const iconData = [];
 
     floatingIcons.forEach(icon => {
-        const speed = 0.4 + Math.random() * 0.8; 
-        const angle = Math.random() * 2 * Math.PI;
-        iconData.push({
-            element: icon,
-            x: window.innerWidth / 2,
-            y: window.innerHeight / 2,
-            vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed
-        });
+      const speed = 0.4 + Math.random() * 0.8;
+      const angle = Math.random() * 2 * Math.PI;
+      iconData.push({
+        element: icon,
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed
+      });
     });
 
     function animateIcons() {
@@ -224,7 +224,7 @@
         if (data.y + iconHeight >= viewportHeight || data.y <= 0) {
           data.vy = -data.vy;
         }
-        
+
         element.style.left = data.x + 'px';
         element.style.top = data.y + 'px';
       });
@@ -233,6 +233,32 @@
     }
 
     animateIcons();
+
+    let buffer = '';
+
+    document.addEventListener('keydown', function(event) {
+      buffer += event.key.toUpperCase();
+
+      if (buffer.includes('ЧУДО')) {
+        window.location.href = 'chudonew.html';
+        buffer = '';
+        return;
+      }
+
+      if (buffer.includes('ЛЕРА') || buffer.includes('ВАЛЕРІЯ')) {
+        window.location.href = 'space.html';
+        buffer = '';
+        return;
+      }
+
+      if (buffer.includes('ГРАМОТА') || buffer.includes('МЕДАЛЬ')) {
+        window.location.href = 'gramota.html';
+        buffer = '';
+        return;
+      }
+
+      if (buffer.length > 20) buffer = buffer.slice(-20);
+    });
   </script>
 </body>
 </html>

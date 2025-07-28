@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8 Чудес Світу</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f5f5dc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 40px;
+            color: #2c3e50;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            max-width: 800px;
+            margin: auto;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .image-container {
+            max-height: 500px;
+            overflow-y: auto;
+            background-color: #000;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .slide img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .slide-content {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 25px;
+            box-sizing: border-box;
+        }
+
+        .slide-content h2 {
+            margin: 0 0 10px 0;
+            font-size: 2.2em;
+            color: #ffc0cb;
+        }
+
+        .slide-content p {
+            margin: 0;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 250px;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .slider-nav button {
+            background-color: rgba(255, 192, 203, 0.8);
+            border: none;
+            padding: 12px 18px;
+            font-size: 28px;
+            cursor: pointer;
+            border-radius: 50%;
+            margin: 0 15px;
+            color: #fff;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            pointer-events: auto;
+        }
+
+        .slider-nav button:hover {
+            background-color: #ff99ac;
+            transform: scale(1.1);
+        }
+
+        .slider-nav button:active {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="title">8 Чудес нового Світу</h1>
+
+        <div class="slider-wrapper">
+            <div class="slider">
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://fact-news.com.ua/wp-content/uploads/58585447.jpg" alt="Велика китайська стіна">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Велика китайська стіна</h2>
+                        <p>Найбільша архітектурна споруда в історії людства  побудована за часів правління всім відомого БІ. Цей гігантський оборонний мур простягається на тисячі кілометрів, демонструючи велич та інженерний геній стародавнього Китаю, такий був імператор БІ</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1996&auto=format&fit=crop" alt="Колізей">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Колізей</h2>
+                        <p>Символ могутності Римської імперії та найбільший амфітеатр античності. На його арені відбувалися жорстокі гладіаторські бої та видовищні шоу, що вражали тисячі глядачів. Люди лишалися конечностей на тій арені, що тут конечностей, пальцев</p>
+                    </div>
+                </div>
+                <div class="slide">
+                     <div class="image-container">
+                        <img src="https://broportal.net.ua/images/market/siplo-brovary-kievskaya-241.jpg" alt="Бровари">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Бровари</h2>
+                        <p>Загублене місто, висічене просто у червоних скелях. Повірила? Ну добре, тут просто найкраща піца 🍕 у Всесвіті і цього досить щоб бути у цьому списку. А хто поспорить?</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=2071&auto=format&fit=crop" alt="Тадж-Махал">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Тадж-Махал 👋</h2>
+                        <p>Перлина ісламського мистецтва та символ вічного кохання. Цей величний мавзолей з білого мармуру був збудований імператором Шах і Мат-Джаханом як усипальниця для його коханої дружини</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://my-obolon.kiev.ua/statji/istoriya/obolon-v-nashi-dni-1.jpg" alt="Оболонь">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Оболонь</h2>
+                        <p>Що перше приходить на думку коли ми чуємо - "Оболонь"? Смачне пиво чи Живчик? Ні. Можливо тоді мальовничу оболонську набережну? Теж не наш варіант. Оболонь - місце сили, яке живеться твоєю красою 💋</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=2070&auto=format&fit=crop" alt="Мачу-Пікчу">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Мачу-Пікчу</h2>
+                        <p>Таємниче місто інків, загублене високо в Андах. Його ідеально оброблені кам'яні споруди, тераси та храми є свідченням неймовірної майстерності стародавньої цивілізації. Ну норм, але можна було і краще постаратися</p>
+                    </div>
+                </div>
+                <div class="slide">
+                    <div class="image-container">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTK5ha-wr1T4ZEcW00Rw1yMDhvid6m0jI59zQ&s" alt="Чичен-Іца">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Чичен-Іца</h2>
+                        <p>Що? Може чікі-брикі-пальчік-вікінь? Хоче це історія другого героя...А тут священне місто цивілізації Мая (а може вже на часі Травня?). Її центральною спорудою є піраміда КУКУлькана, яка демонструє глибокі знання травня в астрономії та математиці (2+2 = 52)</p>
+                    </div>
+                </div>
+                 <div class="slide">
+                    <div class="image-container">
+                        <img src="images/lerachudo.png" alt="Чудо-Лера">
+                    </div>
+                    <div class="slide-content">
+                        <h2>Чудо-Лера 👸</h2>
+                        <p>Найголовніша і найцінніша в нашому списку. Я точно знаю що на три речі можна дивитися нескінченно: на воду , що тече 🌊; на вогонь 🔥; та на твою очаравательность 🥰</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slider-nav">
+                <button class="prev">&#10094;</button>
+                <button class="next">&#10095;</button>
+            </div>
+        </div>
+    </div>
+
+    <a href="news.html" style="display: block; text-align: center; margin: 40px auto; font-size: 1.2em; background-color: #2c3e50; color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; max-width: 200px;">До новин 📰</a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider = document.querySelector('.slider');
+            const slides = document.querySelectorAll('.slide');
+            const prevButton = document.querySelector('.prev');
+            const nextButton = document.querySelector('.next');
+
+            let currentIndex = 0;
+            const slideCount = slides.length;
+
+            function updateSlider() {
+                slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+            }
+
+            function showNextSlide() {
+                currentIndex = (currentIndex + 1) % slideCount;
+                updateSlider();
+            }
+
+            function showPrevSlide() {
+                currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+                updateSlider();
+            }
+
+            nextButton.addEventListener('click', showNextSlide);
+            prevButton.addEventListener('click', showPrevSlide);
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowRight') {
+                    showNextSlide();
+                } else if (event.key === 'ArrowLeft') {
+                    showPrevSlide();
+                }
+            });
+
+            updateSlider();
+        });
+    </script>
+
+</body>
+</html>
